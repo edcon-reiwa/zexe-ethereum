@@ -59,7 +59,6 @@ contract Ledger {
         uint256 in_nullifier,
         uint256[8] memory in_proof
     ) public returns(bool) {
-        require(serialNumbers.length > 0);
         require(newRecords.length > 0);
         require(newRecords.length == memo.length, "Length of new records and memo must match");
         
@@ -67,16 +66,19 @@ contract Ledger {
         // Add check if record is dummy
         // If dummy then construct an instance for the snark proof
 
+        // special case for initial mint
+        if (!minted) {
+            require(in_root == 0);
+            require(serialNumbers.length == 0);
+            minted = true;
+        } else {
+            require(serialNumbers.length > 0);
+            require( roots[in_root], "Must specify known merkle tree root" );
+        }
+
         for (uint256 i = 0; i < serialNumbers.length; i++) {
             require( !nullifiers[serialNumbers[i]], "Cannot double-spend" );
             nullifiers[serialNumbers[i]] = true;
-        }
-
-        // special case for initial mint
-        if (!minted && in_root == 0) {
-            minted = true;
-        } else {
-            require( roots[in_root], "Must specify known merkle tree root" );
         }
 
         bool is_valid = VerifyProof(in_root, in_nullifier, GetExtHash(), in_proof);
