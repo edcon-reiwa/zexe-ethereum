@@ -1,0 +1,24 @@
+@startuml zexe_sequence
+title ZEXE Sequence
+actor "Alice (Sender)" as A
+database IPFS as I
+database Ethereum as E
+actor "Bob (Recipient)" as B
+
+A -->> A: [Premise] Alice has an old record\nthat someone sent 10 tokens to Alice
+A -->> B: [Premise] Alice wants to send 10 tokens to Bob
+A -> A: Create a new record that has a payload\nthat Alice sends 10 tokens to Bob
+A -> A: Create a proof for the record
+A -> I: Store the record that is encrypted with Bob's public key to IPFS
+A <-- I: Receive a content hash
+A -> A: Create a transaction that includes\nserial numbers, commitments, the proof\nand memorandum (the IPFS content hash)
+A -> E: Send the transaction and trigger an event to notify Bob
+E --> E: Verify the proof
+A --> B: 10 tokens has been sent successfully from Alice to Bob
+E <- B: Monitor token receipt events
+E --> B: Receive an event that Bob received 10 tokens from Alice
+I <- B: Search encrypted content with the memorandum
+I --> B: Receive it
+B -> B: Decrypt it then get the record
+
+@enduml
