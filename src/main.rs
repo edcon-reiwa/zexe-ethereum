@@ -2,6 +2,10 @@ use clap::{Arg, App, SubCommand, AppSettings};
 use std::fs::File;
 use std::path::Path;
 use std::string::String;
+use rand::{SeedableRng, XorShiftRng};
+
+use dpc::plain_dpc::instantiated::MerkleTreeIdealLedger;
+
 
 fn main() {
     cli().unwrap_or_else(|e| {
@@ -45,6 +49,12 @@ fn cli() -> Result<(), String> {
     match matches.subcommand() {
         ("setup", Some(sub_maches)) => {
             println!("Peforming setup...");
+            let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
+
+            // let ledger_parameters = MerkleTreeIdealLedger::setup(&mut rng).expect("Ledger setup failed");
+            // let parameters =
+            //     <InstantiatedDPC as DPCScheme<MerkleTreeIdealLedger>>::setup(&ledger_parameters, &mut rng)
+            //         .expect("DPC setup failed");
 
         },
         _ => unreachable!()
