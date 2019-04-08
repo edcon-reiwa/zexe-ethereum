@@ -86,11 +86,11 @@ pub trait PlainDPCComponents: 'static + Sized {
     type LocalDataCommGadget: CommitmentGadget<Self::LocalDataComm, Self::E>;
 
     // NIZK for non-proof-verification checks
-    type MainNIZK: NIZK<
-        Circuit = CoreChecksCircuit<Self>,
-        AssignedCircuit = CoreChecksCircuit<Self>,
-        VerifierInput = CoreChecksVerifierInput<Self>,
-    >;
+    // type MainNIZK: NIZK<
+    //     Circuit = CoreChecksCircuit<Self>,
+    //     AssignedCircuit = CoreChecksCircuit<Self>,
+    //     VerifierInput = CoreChecksVerifierInput<Self>,
+    // >;
 
     // NIZK for proof-verification checks
     type ProofCheckNIZK: NIZK<
@@ -569,10 +569,10 @@ where
         };
 
         let nizk_setup_time = timer_start!(|| "Execute Tx Core Checks NIZK Setup");
-        let core_nizk_pp = Components::MainNIZK::setup(
-            CoreChecksCircuit::blank(&comm_and_crh_pp, ledger_pp),
-            rng,
-        )?;
+        // let core_nizk_pp = Components::MainNIZK::setup(
+        //     CoreChecksCircuit::blank(&comm_and_crh_pp, ledger_pp),
+        //     rng,
+        // )?;
         timer_end!(nizk_setup_time);
 
         let nizk_setup_time = timer_start!(|| "Execute Tx Proof Checks NIZK Setup");
@@ -585,7 +585,7 @@ where
         Ok(PublicParameters {
             comm_and_crh_pp,
             pred_nizk_pp,
-            core_nizk_pp,
+            // core_nizk_pp,
             proof_check_nizk_pp,
         })
     }
@@ -658,28 +658,28 @@ where
             local_data_comm,
             local_data_rand,
         } = context;
-        let core_proof = {
-            let circuit = CoreChecksCircuit::new(
-                &parameters.comm_and_crh_pp,
-                ledger.parameters(),
-                &ledger_digest,
-                old_records,
-                &old_witnesses,
-                old_address_secret_keys,
-                &old_serial_numbers,
-                &new_records,
-                &new_sn_nonce_randomness,
-                &new_commitments,
-                &predicate_comm,
-                &predicate_rand,
-                &local_data_comm,
-                &local_data_rand,
-                memorandum,
-                auxiliary,
-            );
+        // let core_proof = {
+        //     let circuit = CoreChecksCircuit::new(
+        //         &parameters.comm_and_crh_pp,
+        //         ledger.parameters(),
+        //         &ledger_digest,
+        //         old_records,
+        //         &old_witnesses,
+        //         old_address_secret_keys,
+        //         &old_serial_numbers,
+        //         &new_records,
+        //         &new_sn_nonce_randomness,
+        //         &new_commitments,
+        //         &predicate_comm,
+        //         &predicate_rand,
+        //         &local_data_comm,
+        //         &local_data_rand,
+        //         memorandum,
+        //         auxiliary,
+        //     );
 
-            Components::MainNIZK::prove(&parameters.core_nizk_pp.0, circuit, rng)?
-        };
+        //     Components::MainNIZK::prove(&parameters.core_nizk_pp.0, circuit, rng)?
+        // };
 
         let proof_checks_proof = {
             let circuit = ProofCheckCircuit::new(
@@ -699,7 +699,7 @@ where
             new_commitments,
             memorandum.clone(),
             ledger_digest,
-            core_proof,
+            // core_proof,
             proof_checks_proof,
             predicate_comm,
             local_data_comm,
@@ -740,24 +740,24 @@ where
         }
         timer_end!(ledger_time);
 
-        let input = CoreChecksVerifierInput {
-            comm_and_crh_pp:    parameters.comm_and_crh_pp.clone(),
-            ledger_pp:          ledger.parameters().clone(),
-            ledger_digest:      transaction.stuff.digest.clone(),
-            old_serial_numbers: transaction.old_serial_numbers().to_vec(),
-            new_commitments:    transaction.new_commitments().to_vec(),
-            memo:               transaction.memorandum().clone(),
-            predicate_comm:     transaction.stuff.predicate_comm.clone(),
-            local_data_comm:    transaction.stuff.local_data_comm.clone(),
-        };
-        if !Components::MainNIZK::verify(
-            &parameters.core_nizk_pp.1,
-            &input,
-            &transaction.stuff.core_proof,
-        )? {
-            eprintln!("Core NIZK didn't verify.");
-            return Ok(false);
-        };
+        // let input = CoreChecksVerifierInput {
+        //     comm_and_crh_pp:    parameters.comm_and_crh_pp.clone(),
+        //     ledger_pp:          ledger.parameters().clone(),
+        //     ledger_digest:      transaction.stuff.digest.clone(),
+        //     old_serial_numbers: transaction.old_serial_numbers().to_vec(),
+        //     new_commitments:    transaction.new_commitments().to_vec(),
+        //     memo:               transaction.memorandum().clone(),
+        //     predicate_comm:     transaction.stuff.predicate_comm.clone(),
+        //     local_data_comm:    transaction.stuff.local_data_comm.clone(),
+        // };
+        // if !Components::MainNIZK::verify(
+        //     &parameters.core_nizk_pp.1,
+        //     &input,
+        //     &transaction.stuff.core_proof,
+        // )? {
+        //     eprintln!("Core NIZK didn't verify.");
+        //     return Ok(false);
+        // };
 
         let input = ProofCheckVerifierInput {
             comm_and_crh_pp: parameters.comm_and_crh_pp.clone(),

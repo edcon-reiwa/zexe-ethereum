@@ -42,9 +42,6 @@ use std::fmt;
 /// with well-defined relationships. In particular, the G1/G2 curve groups are
 /// of prime order `r`, and are equipped with a bilinear pairing function.
 pub trait Engine: ScalarEngine {
-    /// This is the scalar field of the G1/G2 groups.
-    type Fr: PrimeField + SquareRootField;
-
     /// The projective representation of an element in G1.
     type G1: CurveProjective<
             Engine = Self,

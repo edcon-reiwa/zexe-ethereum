@@ -24,8 +24,8 @@ pub struct DPCTransaction<C: PlainDPCComponents> {
 )]
 pub struct DPCStuff<C: PlainDPCComponents> {
     pub digest: C::D,
-    #[derivative(PartialEq = "ignore")]
-    pub core_proof: <C::MainNIZK as NIZK>::Proof,
+    // #[derivative(PartialEq = "ignore")]
+    // pub core_proof: <C::MainNIZK as NIZK>::Proof,
     #[derivative(PartialEq = "ignore")]
     pub predicate_proof: <C::ProofCheckNIZK as NIZK>::Proof,
     #[derivative(PartialEq = "ignore")]
@@ -40,14 +40,14 @@ impl<C: PlainDPCComponents> DPCTransaction<C> {
         new_commitments: Vec<<Self as Transaction>::Commitment>,
         memorandum: <Self as Transaction>::Memorandum,
         digest: C::D,
-        core_proof: <C::MainNIZK as NIZK>::Proof,
+        // core_proof: <C::MainNIZK as NIZK>::Proof,
         predicate_proof: <C::ProofCheckNIZK as NIZK>::Proof,
         predicate_comm: <C::PredVkComm as CommitmentScheme>::Output,
         local_data_comm: <C::LocalDataComm as CommitmentScheme>::Output,
     ) -> Self {
         let stuff = DPCStuff {
             digest,
-            core_proof,
+            // core_proof,
             predicate_proof,
             predicate_comm,
             local_data_comm,
