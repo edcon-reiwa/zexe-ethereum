@@ -6,15 +6,17 @@ edition = "2018"
 
 [dependencies]
 clap = "~2.32"
-dpc = { git = "https://github.com/scipr-lab/zexe" }
-algebra = { git = "https://github.com/scipr-lab/zexe" }
-snark = { git = "https://github.com/scipr-lab/zexe"}
-snark-gadgets = { git = "https://github.com/scipr-lab/zexe"}
+dpc = { git = "https://github.com/osuketh/zexe" }
+algebra = { git = "https://github.com/osuketh/zexe" }
+snark = { git = "https://github.com/osuketh/zexe"}
+snark-gadgets = { git = "https://github.com/osuketh/zexe"}
 pairing_ce = { git = "https://github.com/matter-labs/pairing" }
 bellman_ce = { git = "https://github.com/matter-labs/bellman" }
 # sapling-crypto_ce = { git = "https://github.com/matter-labs/sapling-crypto" }
 ff_ce = { git = "https://github.com/matter-labs/ff" }
 rand = "0.4"
+failure = { version = "0.1.1" }
+failure_derive = { version = "0.1.1" }
 
 [[bin]]
 name = 'zero-chain'
