@@ -11,6 +11,7 @@ A -> A: Create a new record that has a payload\nthat Alice sends 10 tokens to Bo
 A -> A: Create a proof for the record
 A -> I: Store the record that is encrypted with Bob's public key to IPFS
 A <-- I: Receive a content hash
+A -> B: Tell Bob the content hash then Bob will be able to search the record from IPFS
 A -> A: Create a transaction that includes\nserial numbers, commitments, the proof\nand memorandum (the IPFS content hash)
 A -> E: Send the transaction and trigger an event to notify Bob
 E --> E: Verify the proof
