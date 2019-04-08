@@ -1,0 +1,20 @@
+[package]
+name = "zexe-ethereum"
+version = "0.1.0"
+authors = ["Osuke Sudo <dish230@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "~2.32"
+dpc = { git = "https://github.com/scipr-lab/zexe" }
+algebra = { git = "https://github.com/scipr-lab/zexe" }
+snark = { git = "https://github.com/scipr-lab/zexe"}
+snark-gadgets = { git = "https://github.com/scipr-lab/zexe"}
+pairing_ce = { git = "https://github.com/matter-labs/pairing" }
+bellman_ce = { git = "https://github.com/matter-labs/bellman" }
+# sapling-crypto-ce = { git = "https://github.com/matter-labs/sapling-crypto" }
+ff_ce = { git = "https://github.com/matter-labs/ff" }
+
+[[bin]]
+name = 'zero-chain'
+path = 'src/main.rs'
