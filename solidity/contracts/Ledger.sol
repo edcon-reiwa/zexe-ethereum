@@ -62,6 +62,10 @@ contract Ledger {
         require(serialNumbers.length > 0);
         require(newRecords.length > 0);
         require(newRecords.length == memo.length, "Length of new records and memo must match");
+        
+        // TODO
+        // Add check if record is dummy
+        // If dummy then construct an instance for the snark proof
 
         for (uint256 i = 0; i < serialNumbers.length; i++) {
             require( !nullifiers[serialNumbers[i]], "Cannot double-spend" );
