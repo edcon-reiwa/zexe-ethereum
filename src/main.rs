@@ -22,6 +22,8 @@ use dpc::plain_dpc::{
 use algebra::{to_bytes, ToBytes};
 use snark::gm17::PreparedVerifyingKey;
 
+use byteorder::{WriteBytesExt, LittleEndian};
+
 fn main() {
     cli().unwrap_or_else(|e| {
         println!("{}", e);
@@ -156,6 +158,9 @@ fn cli() -> Result<(), String> {
                 old_records.push(old_record);
             }
 
+            let amount_str = sub_matches.value_of("amount").unwrap();
+            let amount: u32 = amount_str.parse().unwrap();
+
             // Construct new records.
 
             // Create an address for an actual new record.
@@ -164,12 +169,18 @@ fn cli() -> Result<(), String> {
                 DPC::create_address_helper(&parameters.comm_and_crh_pp, &new_metadata, &mut rng).unwrap();
 
             // Create a payload.
-            let new_payload = [2u8; 32];
+            let new_dummy_payload = [2u8; 32];
+
+            // if mode == "MINT"
+            let mut new_mint_payload = [0u8; 32];
+            (&mut new_mint_payload[0..4]).write_u32::<LittleEndian>(amount).unwrap();
+
             // Set the new records' predicate to be the "always-accept" predicate.
             let new_predicate = Predicate::new(genesis_pred_vk_bytes.clone());
 
             let new_apks = vec![new_address.public_key.clone(); NUM_OUTPUT_RECORDS];
-            let new_payloads = vec![new_payload.clone(); NUM_OUTPUT_RECORDS];
+            // let new_payloads = vec![new_payload.clone(); NUM_OUTPUT_RECORDS];
+            let new_payloads = vec![new_dummy_payload, new_mint_payload];
             let new_birth_predicates = vec![new_predicate.clone(); NUM_OUTPUT_RECORDS];
             let new_death_predicates = vec![new_predicate.clone(); NUM_OUTPUT_RECORDS];
             let new_dummy_flags = vec![false; NUM_OUTPUT_RECORDS];
@@ -212,9 +223,6 @@ fn cli() -> Result<(), String> {
                 }
                 old_proof_and_vk
             };
-
-            let amount_str = sub_matches.value_of("amount").unwrap();
-            let amount: u32 = amount_str.parse().unwrap();
 
             let new_birth_vk_and_proof_generator = |local_data: &LocalData<Components>| {
                 let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
