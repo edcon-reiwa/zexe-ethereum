@@ -30,21 +30,21 @@ pub struct PublicParameters<C: PlainDPCComponents> {
         <C::ProofCheckNIZK as NIZK>::ProvingParameters,
         <C::ProofCheckNIZK as NIZK>::PreparedVerificationParameters,
     ),
-    // pub core_nizk_pp: (
-    //     <C::MainNIZK as NIZK>::ProvingParameters,
-    //     <C::MainNIZK as NIZK>::PreparedVerificationParameters,
-    // ),
+    pub core_nizk_pp: (
+        <C::MainNIZK as NIZK>::ProvingParameters,
+        <C::MainNIZK as NIZK>::PreparedVerificationParameters,
+    ),
 }
 
 impl<C: PlainDPCComponents> PublicParameters<C> {
-    // pub fn core_check_nizk_pp(
-    //     &self,
-    // ) -> &(
-    //     <C::MainNIZK as NIZK>::ProvingParameters,
-    //     <C::MainNIZK as NIZK>::PreparedVerificationParameters,
-    // ) {
-    //     &self.core_nizk_pp
-    // }
+    pub fn core_check_nizk_pp(
+        &self,
+    ) -> &(
+        <C::MainNIZK as NIZK>::ProvingParameters,
+        <C::MainNIZK as NIZK>::PreparedVerificationParameters,
+    ) {
+        &self.core_nizk_pp
+    }
 
     pub fn proof_check_nizk_pp(
         &self,

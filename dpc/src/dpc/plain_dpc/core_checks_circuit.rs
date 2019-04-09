@@ -1,4 +1,4 @@
-use pairing_ce::Engine;
+use algebra::PairingEngine;
 use failure::Error;
 use snark::{Circuit, ConstraintSystem, SynthesisError};
 
@@ -56,7 +56,7 @@ where
     C::D: ToEngineFr<C::E>,
     <C::D as LedgerDigest>::Parameters: ToEngineFr<C::E>,
 {
-    fn to_engine_fr(&self) -> Result<Vec<<C::E as Engine>::Fr>, Error> {
+    fn to_engine_fr(&self) -> Result<Vec<<C::E as PairingEngine>::Fr>, Error> {
         let mut v = Vec::new();
 
         v.extend_from_slice(&self.comm_and_crh_pp.addr_comm_pp.to_engine_fr()?);

@@ -22,12 +22,10 @@ edition = "2018"
 ################################# Dependencies ################################
 
 [dependencies]
-algebra = { git = "https://github.com/osuketh/zexe" }
-snark = { git = "https://github.com/osuketh/zexe" }
-snark-gadgets = { git = "https://github.com/osuketh/zexe" }
-bench-utils = { git = "https://github.com/osuketh/zexe" }
-
-pairing_ce = { git = "https://github.com/matter-labs/pairing" }
+algebra = { git = "https://github.com/scipr-lab/zexe" }
+snark = { git = "https://github.com/scipr-lab/zexe" }
+snark-gadgets = { git = "https://github.com/scipr-lab/zexe" }
+bench-utils = { git = "https://github.com/scipr-lab/zexe" }
 
 digest = "0.7"
 blake2 = "0.7"

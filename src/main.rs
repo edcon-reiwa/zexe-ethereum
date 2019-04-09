@@ -5,25 +5,22 @@ use std::string::String;
 use rand::{SeedableRng, XorShiftRng};
 use primitives::hexdisplay::{HexDisplay, AsBytesRef};
 
-// pub mod instantiated;
-// use instantiated::*;
+pub mod instantiated;
+use instantiated::*;
 use ::dpc::{
     dpc::plain_dpc::*,
     dpc::{DPCScheme, Record},
     crypto_primitives::*,
     ledger::*,
 };
-use dpc::dpc::plain_dpc::instantiated::*;
 use dpc::plain_dpc::{
     predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit},
     LocalData,
-    predicate::PrivatePredInput
+    predicate::PrivatePredInput,
+    DPC
 };
 use algebra::{to_bytes, ToBytes};
 use snark::gm17::PreparedVerifyingKey;
-// use bellman_ce::groth16::PreparedVerifyingKey;
-
-pub mod groth16;
 
 fn main() {
     cli().unwrap_or_else(|e| {
@@ -263,7 +260,7 @@ fn cli() -> Result<(), String> {
             transaction.new_commitments.write(new_commitments_v.clone()).unwrap();
 
             transaction.stuff.digest.write(stuff_digest_v.clone()).unwrap();
-            // transaction.stuff.core_proof.write(stuff_core_proof_v.clone()).unwrap();
+            transaction.stuff.core_proof.write(stuff_core_proof_v.clone()).unwrap();
             transaction.stuff.predicate_proof.write(stuff_predicate_proof_v.clone()).unwrap();
             transaction.stuff.predicate_comm.write(stuff_predicate_comm_v.clone()).unwrap();
             transaction.stuff.local_data_comm.write(stuff_local_data_comm_v.clone()).unwrap();
@@ -273,6 +270,7 @@ fn cli() -> Result<(), String> {
                 \nold serial numbers: 0x{}
                 \nnew_commitments: 0x{}
                 \nledger digest: 0x{}
+                \ncore proof: 0x{}
                 \npredicate proof: 0x{}
                 \npredicate commitment: 0x{}
                 \nlocal data commitment: 0x{}
@@ -280,7 +278,7 @@ fn cli() -> Result<(), String> {
                 HexDisplay::from(&&old_serial_numbers_v[..] as &AsBytesRef),
                 HexDisplay::from(&&new_commitments_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_digest_v[..] as &AsBytesRef),
-                // HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
+                HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_predicate_comm_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_local_data_comm_v[..] as &AsBytesRef),

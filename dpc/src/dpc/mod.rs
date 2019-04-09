@@ -2,7 +2,7 @@ use failure::Error;
 use rand::Rng;
 use std::hash::Hash;
 
-// pub mod delegable_dpc;
+pub mod delegable_dpc;
 pub mod plain_dpc;
 
 use crate::ledger::Ledger;

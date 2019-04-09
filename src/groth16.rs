@@ -1,5 +1,5 @@
 use dpc::crypto_primitives::nizk::NIZK;
-use algebra::PairingEngine;
+// use algebra::PairingEngine;
 // use snark::Circuit;
 use bellman_ce::Circuit;
 use algebra::utils::ToEngineFr;
@@ -9,7 +9,7 @@ use bellman_ce::groth16::{
     create_random_proof, generate_random_parameters, prepare_verifying_key, verify_proof,
     Parameters, PreparedVerifyingKey, Proof, VerifyingKey
 };
-use pairing_ce::Engine;
+// use pairing_ce::Engine;
 use rand::Rng;
 use failure::Error;
 

@@ -31,9 +31,8 @@ use snark_gadgets::{
 };
 
 use crate::dpc::plain_dpc::{
-    predicate::DPCPredicate, predicate_circuit::*, proof_check_circuit::*,
+    core_checks_circuit::*, predicate::DPCPredicate, predicate_circuit::*, proof_check_circuit::*,
     transaction::DPCTransaction, LocalData as DPCLocalData, PlainDPCComponents, DPC,
-    // core_checks_circuit::*,
 };
 
 use crate::ledger::{CommPath, Digest, IdealLedger};
@@ -106,7 +105,7 @@ impl PlainDPCComponents for Components {
     type D = MerkleTreeDigest;
     type SnNonceH = SnNonceCRH;
     type SnNonceHGadget = SnNonceCRHGadget;
-    // type MainNIZK = CoreCheckNIZK;
+    type MainNIZK = CoreCheckNIZK;
     type ProofCheckNIZK = ProofCheckNIZK;
     type LCW = MerkleTreeWitness;
     type LCWGadget = MerkleTreeWitnessGadget;
@@ -139,8 +138,8 @@ pub type SnNonceCRH = PedersenCRHCompressor<EdwardsBls, EdwardsCompressor, SnNon
 pub type PredVkCRH = PedersenCRHCompressor<EdwardsSW, EdwardsCompressor, PredVkHashWindow>;
 
 pub type Predicate = DPCPredicate<Components>;
-// pub type CoreCheckNIZK =
-//     Gm17<CoreEngine, CoreChecksCircuit<Components>, CoreChecksVerifierInput<Components>>;
+pub type CoreCheckNIZK =
+    Gm17<CoreEngine, CoreChecksCircuit<Components>, CoreChecksVerifierInput<Components>>;
 pub type ProofCheckNIZK =
     Gm17<ProofCheckEngine, ProofCheckCircuit<Components>, ProofCheckVerifierInput<Components>>;
 pub type PredicateNIZK<C> = Gm17<CoreEngine, EmptyPredicateCircuit<C>, PredicateLocalData<C>>;
