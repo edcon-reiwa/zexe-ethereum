@@ -1,0 +1,1 @@
+[{"constant":false,"inputs":[{"name":"_blockRoot","type":"uint256"}],"name":"submitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"blockNumber","type":"uint256"},{"indexed":false,"name":"blockRoot","type":"uint256"}],"name":"BlockSubmitted","type":"event"}]
