@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import namehash from "eth-ens-namehash"
 
 const ZEXE_ETH_LOCAL_STORAGE = "zexe_eth_edcon_local_storage"
 
@@ -28,7 +29,9 @@ class AccountComponent extends Component {
     this.generateTx = this.generateTx.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.renderCommitmentHistory = this.renderCommitmentHistory.bind(this)
+    this.resolveEns = this.resolveEns.bind(this)
     this.state = {
+      toAddress: "",
       txValue: 0,
       serialNumbers: null,
       newCommitments: null,
@@ -84,6 +87,28 @@ class AccountComponent extends Component {
     localStorage.setItem(ZEXE_ETH_LOCAL_STORAGE, JSON.stringify(storage))
   }
 
+  resolveEns(event) {
+    if (!event.target.value) {
+      this.setState({
+        toAddress: ""
+      })
+      return
+    }
+
+    this.props.ensContract.methods.owner(
+      namehash.hash(event.target.value)
+    ).call().then(result => {
+      if (result != 0x0){
+        this.setState({
+          toAddress: result
+        })
+      }
+    })
+    this.setState({
+      toAddress: event.target.value
+    })
+  }
+
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value
@@ -127,7 +152,7 @@ class AccountComponent extends Component {
       }
 
       for (var i in events) {
-        this.addCommitment(events[i].returnValues[1], this.state.txValue)
+        this.addCommitment(events[i].returnValues[2], this.state.txValue)
       }
     })
   }
@@ -171,7 +196,7 @@ class AccountComponent extends Component {
             </h4>
             <form className="pure-form pure-form-stacked send-form">
               <fieldset>
-                <input type="text" placeholder="To:" />
+                <input type="text" name="toAddress" placeholder="To:" onChange={this.resolveEns} value={this.state.toAddress}/>
                 <input type="text" placeholder="Value:" />
                 <button
                   type="submit"

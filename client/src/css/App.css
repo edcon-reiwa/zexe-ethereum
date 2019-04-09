@@ -41,7 +41,7 @@ body {
   color: #FF4E67;
 }
 
-.account-section {
+.account-section, .ens-section {
   width: 80%;
   margin-top: 50px;
   margin-left: auto;
@@ -70,12 +70,12 @@ body {
   margin-bottom: 0px;
 }
 
-.send-form input {
+.send-form input, .ens-form input {
   width: 90%;
   color: #1E2837;
 }
 
-.send-form button {
+.send-form button, .ens-form button {
   float: left;
   background: #3a87d2;
 }

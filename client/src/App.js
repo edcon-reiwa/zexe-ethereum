@@ -1,7 +1,11 @@
 import React, { Component } from "react"
 import LedgerContract from "./contracts/Ledger.json"
+import FIFSRegistrar from "./contracts/FIFSRegistrar.json"
+import ENSRegistry from "./contracts/ENSRegistry.json"
 import getWeb3 from "./utils/getWeb3"
 import AccountComponent from "./AccountComponent"
+import EnsRegistrarComponent from "./EnsRegistrarComponent"
+
 
 import "./css/App.css"
 import "./css/pure-min.css"
@@ -12,7 +16,9 @@ class App extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null
+    contract: null,
+    ensContract: null,
+    ensRegistrarContract: null,
   }
   
   constructor(props) {
@@ -35,9 +41,27 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       )
 
+      const deployedNetworkFIFSRegistrar = FIFSRegistrar.networks[networkId]
+      const instanceEnsRegistrar = new web3.eth.Contract(
+        FIFSRegistrar.abi,
+        deployedNetworkFIFSRegistrar && deployedNetworkFIFSRegistrar.address,
+      )
+
+      const deployedNetworkEns = ENSRegistry.networks[networkId]
+      const instanceEns = new web3.eth.Contract(
+        ENSRegistry.abi,
+        deployedNetworkEns && deployedNetworkEns.address,
+      )
+
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance })
+      this.setState({
+        web3,
+        accounts,
+        contract: instance,
+        ensContract: instanceEns,
+        ensRegistrarContract: instanceEnsRegistrar
+      })
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -58,6 +82,12 @@ class App extends Component {
         <AccountComponent
           web3={this.state.web3}
           contract={this.state.contract}
+          ensContract={this.state.ensContract}
+          accounts={this.state.accounts}
+        />
+        <EnsRegistrarComponent
+          web3={this.state.web3}
+          contract={this.state.ensRegistrarContract}
           accounts={this.state.accounts}
         />
       </div>
