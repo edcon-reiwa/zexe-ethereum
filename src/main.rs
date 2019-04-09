@@ -17,6 +17,7 @@ use dpc::plain_dpc::{
     predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit, MintPredicateCircuit, ConservePredicateCircuit},
     LocalData,
     predicate::PrivatePredInput,
+    // address::{alice_keypair, bob_keypair},
     DPC
 };
 use algebra::{to_bytes, ToBytes};
@@ -101,6 +102,8 @@ fn cli() -> Result<(), String> {
                 DPC::create_address_helper(&parameters.comm_and_crh_pp, &genesis_metadata, &mut rng)
                     .unwrap();
 
+            // let genesis_address = alice_keypair();
+
             let genesis_sn_nonce =
                 SnNonceCRH::evaluate(&parameters.comm_and_crh_pp.sn_nonce_crh_pp, &[34u8; 1]).unwrap();
 
@@ -137,7 +140,7 @@ fn cli() -> Result<(), String> {
 
             // Generate dummy input records having as address the genesis address.
             let old_asks = vec![genesis_address.secret_key.clone(); NUM_INPUT_RECORDS];
-            println!("old_asks:{:?}", genesis_address.secret_key);
+
             let mut old_records = vec![];
             for i in 0..NUM_INPUT_RECORDS {
                 let old_sn_nonce = SnNonceCRH::evaluate(
@@ -170,6 +173,8 @@ fn cli() -> Result<(), String> {
             let new_metadata = [2u8; 32];
             let new_address =
                 DPC::create_address_helper(&parameters.comm_and_crh_pp, &new_metadata, &mut rng).unwrap();
+
+            // let new_address = bob_keypair();
 
             // Create a payload.
             let new_dummy_payload = [2u8; 32];
