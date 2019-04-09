@@ -224,7 +224,7 @@ class AccountComponent extends Component {
                   className="pure-button pure-button-primary"
                   onClick={this.mint}
                 >
-                  Transfer
+                  Mint
                 </button>
               </fieldset>
             </form>
