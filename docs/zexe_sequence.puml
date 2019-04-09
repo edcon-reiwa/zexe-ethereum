@@ -6,6 +6,8 @@ database Ethereum as E
 actor "Bob (Recipient)" as B
 
 A -->> A: [Premise] Alice has an old record\nthat someone sent 10 tokens to Alice
+A -> B: [Preparation] Alice requests Bob to share his public key
+A <-- B: [Preparation] Bob shares his public key with Alice
 A -->> B: [Premise] Alice wants to send 10 tokens to Bob
 A -> A: Create a new record that has a payload\nthat Alice sends 10 tokens to Bob
 A -> A: Create a proof for the record
