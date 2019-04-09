@@ -5,7 +5,7 @@ use rand::{Rand, Rng};
 use std::cmp::Ordering;
 
 /// An element of Fq2, represented by c0 + c1 * u.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Default)]
 pub struct Fq2 {
     pub c0: Fq,
     pub c1: Fq,
@@ -289,7 +289,7 @@ fn test_fq2_frobc1() {
         0x10216f7ba065e00d,
     ]);
     print!("Frob1 = {}\n", res1);
-    
+
     let res2 = a.pow([
         0x691c1d8b62747890,
         0x8cab57b9adf8eb00,
@@ -405,7 +405,7 @@ fn test_fq2_frobc2() {
         0x2042def740cbc01b,
     ]);
     print!("Frob1 = {}\n", res1);
-    
+
     let res2 = a.pow([
         0xd2383b16c4e8f120,
         0x1956af735bf1d600,
@@ -521,7 +521,7 @@ fn test_fq2_frob12() {
         0x0810b7bdd032f006,
     ]);
     print!("Frob1 = {}\n", res1);
-    
+
     let res2 = a.pow([
         0x348e0ec5b13a3c48,
         0xc655abdcd6fc7580,
@@ -829,7 +829,7 @@ fn test_calculate_frob_1() {
     a.mul_by_nonresidue();
 
     // Fq2(u + 9)**(((q^1) - 1) / 3)
-    
+
     print!("(i + 9) = {}\n", a);
 }
 
