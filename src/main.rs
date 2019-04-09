@@ -14,7 +14,6 @@ use std::string::String;
 pub mod instantiated;
 use instantiated::*;
 use ::dpc::{
-    dpc::plain_dpc::*,
     dpc::{DPCScheme, Record},
     crypto_primitives::*,
     ledger::*,
@@ -100,8 +99,8 @@ fn cli() -> Result<(), String> {
             let ledger_parameters = MerkleTreeIdealLedger::setup(&mut rng).expect("Ledger setup failed");
             let parameters =
                 <InstantiatedDPC as DPCScheme<MerkleTreeIdealLedger>>::setup(&ledger_parameters, &mut rng)
-
                     .expect("DPC setup failed");
+
             println!("Generating transaction...");
             #[cfg(debug_assertions)]
             let pred_nizk_pvk: PreparedVerifyingKey<_> = parameters.pred_nizk_pp.vk.clone().into();
@@ -197,7 +196,7 @@ fn cli() -> Result<(), String> {
             let new_predicate = Predicate::new(genesis_pred_vk_bytes.clone());
 
             let new_apks = vec![new_address.public_key.clone(); NUM_OUTPUT_RECORDS];
-            let mut v = [0u8; 64];
+            let mut v = [0u8; 32];
             new_address.public_key.write(&mut v[..]).unwrap();
             println!("public key:{:?}", hex::encode(&v[..]));
 
@@ -305,7 +304,7 @@ fn cli() -> Result<(), String> {
             let mut old_serial_number1_v = [0u8; 32];
             let mut new_commitment1_v = [0u8; 32];
             let mut stuff_digest_v = [0u8; 32];
-            // let stuff_core_proof_v: Vec<u8> = vec![];
+            // let mut stuff_core_proof_v = [0u8; 192];
             // let stuff_predicate_proof_v: Vec<u8> = vec![];
             let mut stuff_predicate_comm_v = [0u8; 32];
             let mut stuff_local_data_comm_v = [0u8; 32];
@@ -315,14 +314,10 @@ fn cli() -> Result<(), String> {
             transaction.new_commitments[0].write(&mut new_commitment1_v[..]).unwrap();
 
             transaction.stuff.digest.write(&mut stuff_digest_v[..]).unwrap();
-            // transaction.stuff.core_proof.write(stuff_core_proof_v).unwrap();
+            // transaction.stuff.core_proof.write(&mut stuff_core_proof_v[..]).unwrap();
             // transaction.stuff.predicate_proof.write(stuff_predicate_proof_v).unwrap();
             transaction.stuff.predicate_comm.write(&mut stuff_predicate_comm_v[..]).unwrap();
             transaction.stuff.local_data_comm.write(&mut stuff_local_data_comm_v[..]).unwrap();
-
-            // println!("len1: {:?}", new_commitments_v.len());
-            // println!("len2: {:?}", stuff_predicate_comm_v.len());
-
 
             assert_eq!(genesis_pred_vk_bytes.len(), 48);
 
@@ -342,7 +337,6 @@ fn cli() -> Result<(), String> {
             write_to_file(Path::new(path), &serialized);
             upload_to_ipfs(path);
 
-
             println!(
                 "
                 \nold serial number: 0x{}
@@ -351,13 +345,10 @@ fn cli() -> Result<(), String> {
                 \npredicate commitment: 0x{}
                 \nlocal data commitment: 0x{}
                 ",
-                // \ncore proof: 0x{}
-                // \npredicate proof: 0x{}
+                // \nzk proof: 0x{}
                 HexDisplay::from(&old_serial_number1_v as &AsBytesRef),
                 HexDisplay::from(&new_commitment1_v as &AsBytesRef),
                 HexDisplay::from(&stuff_digest_v as &AsBytesRef),
-                // HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
-                // HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
                 HexDisplay::from(&stuff_predicate_comm_v as &AsBytesRef),
                 HexDisplay::from(&stuff_local_data_comm_v as &AsBytesRef),
                 );

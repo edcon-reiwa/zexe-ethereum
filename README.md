@@ -58,3 +58,7 @@ transaction = {
     "in_proof": 21321321321
 }
 ```
+
+## Reference
+- [Zexe: Enabling Decentralized Private Computation](https://eprint.iacr.org/2018/962.pdf)
+- [scipr-lab/zexe](https://github.com/scipr-lab/zexe)
