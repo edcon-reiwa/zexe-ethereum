@@ -193,6 +193,7 @@ fn cli() -> Result<(), String> {
                 }
                 old_proof_and_vk
             };
+
             let new_birth_vk_and_proof_generator = |local_data: &LocalData<Components>| {
                 let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
                 let mut new_proof_and_vk = vec![];
@@ -227,6 +228,7 @@ fn cli() -> Result<(), String> {
                 }
                 new_proof_and_vk
             };
+
             let (_new_records, transaction) = InstantiatedDPC::execute(
                 &parameters,
                 &old_records,
@@ -247,46 +249,54 @@ fn cli() -> Result<(), String> {
 
             assert!(InstantiatedDPC::verify(&parameters, &transaction, &ledger).unwrap());
 
-            let old_serial_numbers_v: Vec<u8> = vec![];
-            let new_commitments_v: Vec<u8> = vec![];
-            let stuff_digest_v: Vec<u8> = vec![];
+
+            let mut old_serial_number1_v = [0u8; 32];
+            let mut old_serial_number2_v = [0u8; 32];
+            let mut new_commitment1_v = [0u8; 32];
+            let mut new_commitment2_v = [0u8; 32];
+            let mut stuff_digest_v = [0u8; 32];
             // let stuff_core_proof_v: Vec<u8> = vec![];
             // let stuff_predicate_proof_v: Vec<u8> = vec![];
-            let stuff_predicate_comm_v: Vec<u8> = vec![];
-            let stuff_local_data_comm_v: Vec<u8> = vec![];
+            let mut stuff_predicate_comm_v = [0u8; 32];
+            let mut stuff_local_data_comm_v = [0u8; 32];
 
-            transaction.old_serial_numbers.write(old_serial_numbers_v.clone()).unwrap();
+            transaction.old_serial_numbers[0].write(&mut old_serial_number1_v[..]).unwrap();
+            transaction.old_serial_numbers[1].write(&mut old_serial_number2_v[..]).unwrap();
 
-            transaction.new_commitments.write(new_commitments_v.clone()).unwrap();
+            transaction.new_commitments[0].write(&mut new_commitment1_v[..]).unwrap();
+            transaction.new_commitments[1].write(&mut new_commitment2_v[..]).unwrap();
 
-            transaction.stuff.digest.write(stuff_digest_v.clone()).unwrap();
-            // transaction.stuff.core_proof.write(stuff_core_proof_v.clone()).unwrap();
-            // transaction.stuff.predicate_proof.write(stuff_predicate_proof_v.clone()).unwrap();
-            transaction.stuff.predicate_comm.write(stuff_predicate_comm_v.clone()).unwrap();
-            transaction.stuff.local_data_comm.write(stuff_local_data_comm_v.clone()).unwrap();
+            transaction.stuff.digest.write(&mut stuff_digest_v[..]).unwrap();
+            // transaction.stuff.core_proof.write(stuff_core_proof_v).unwrap();
+            // transaction.stuff.predicate_proof.write(stuff_predicate_proof_v).unwrap();
+            transaction.stuff.predicate_comm.write(&mut stuff_predicate_comm_v[..]).unwrap();
+            transaction.stuff.local_data_comm.write(&mut stuff_local_data_comm_v[..]).unwrap();
+
+            // println!("len1: {:?}", new_commitments_v.len());
+            // println!("len2: {:?}", stuff_predicate_comm_v.len());
 
             println!(
                 "
-                \nold serial numbers: 0x{}
-                \nnew_commitments: 0x{}
+                \nold serial number1: 0x{}
+                \nold serial number2: 0x{}
+                \nnew_commitment1: 0x{}
+                \nnew_commitment2: 0x{}
                 \nledger digest: 0x{}
-
                 \npredicate commitment: 0x{}
                 \nlocal data commitment: 0x{}
                 ",
                 //  \ncore proof: 0x{}
                 // \npredicate proof: 0x{}
-                HexDisplay::from(&&old_serial_numbers_v[..] as &AsBytesRef),
-                HexDisplay::from(&&new_commitments_v[..] as &AsBytesRef),
-                HexDisplay::from(&&stuff_digest_v[..] as &AsBytesRef),
+                HexDisplay::from(&old_serial_number1_v as &AsBytesRef),
+                HexDisplay::from(&old_serial_number2_v as &AsBytesRef),
+                HexDisplay::from(&new_commitment1_v as &AsBytesRef),
+                HexDisplay::from(&new_commitment2_v as &AsBytesRef),
+                HexDisplay::from(&stuff_digest_v as &AsBytesRef),
                 // HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
                 // HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
-                HexDisplay::from(&&stuff_predicate_comm_v[..] as &AsBytesRef),
-                HexDisplay::from(&&stuff_local_data_comm_v[..] as &AsBytesRef),
+                HexDisplay::from(&stuff_predicate_comm_v as &AsBytesRef),
+                HexDisplay::from(&stuff_local_data_comm_v as &AsBytesRef),
                 );
-
-            // ledger.push(transaction).unwrap();
-            // assert_eq!(ledger.len(), 1);
 
         },
         _ => unreachable!()
