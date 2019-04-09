@@ -10,7 +10,8 @@ Cargo.lock
 **/*.rs.bk
 
 .idea
+.DS_STORE
 
 # Solidity builds
 solidity/build/*
-.DS_STORE
+client/src/contracts/*
