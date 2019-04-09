@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import LedgerContract from './contracts/Ledger.json'
-import getWeb3 from './utils/getWeb3'
-import AccountComponent from './AccountComponent'
+import React, { Component } from "react"
+import LedgerContract from "./contracts/Ledger.json"
+import getWeb3 from "./utils/getWeb3"
+import AccountComponent from "./AccountComponent"
 
-import './css/App.css'
-import './css/pure-min.css'
+import "./css/App.css"
+import "./css/pure-min.css"
 import "./css/grids-responsive-min.css"
 
 
@@ -52,8 +52,8 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>
     }
     return (
-      <div className='App'>
-        <h1 className='title'>ZEXE on Ethereum with Plasma</h1>
+      <div className="App">
+        <h1 className="title">ZEXE on Ethereum (with Plasma)</h1>
         <h2>Team Reiwa @ EDCON 2019</h2>
         <AccountComponent
           web3={this.state.web3}

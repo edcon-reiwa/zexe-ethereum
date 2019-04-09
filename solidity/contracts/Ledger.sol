@@ -23,16 +23,16 @@ contract Ledger {
 
     MerkleTree.Data internal tree;
 
-    constructor() public {
-        // TODO FIX
-        // adding initial mint record
-        Insert(1);
-    }
-
     function GetRoot()
         public view returns (uint256)
     {
         return tree.GetRoot();
+    }
+
+    function GetRootHex()
+        public view returns (bytes32)
+    {
+        return bytes32(tree.GetRoot());
     }
 
     function Insert(uint256 leaf) 
@@ -59,7 +59,7 @@ contract Ledger {
             ))) % Verifier.ScalarField();
     }
 
-    function ApproveTransaction(
+    function Mint(
         bytes32[] memory serialNumbers,
         bytes32[] memory newRecords,
         bytes32[] memory memo,
@@ -69,6 +69,37 @@ contract Ledger {
         require(newRecords.length > 0, "newRecord list should not be empty");
         require(newRecords.length == memo.length, "Length of new records and memo must match");
         
+        require(serialNumbers.length > 0, "serial number should not be empty");
+
+        for (uint256 i = 0; i < serialNumbers.length; i++) {
+            require( !nullifiers[serialNumbers[i]], "Cannot double-spend" );
+            nullifiers[serialNumbers[i]] = true;
+        }
+
+        // TODO, re-add when proofs are working
+        // bool is_valid = VerifyProof(serialNumbers, newRecords, memo, digest, in_proof);
+        bool is_valid = VerifyProof(serialNumbers, newRecords, memo, digest);
+
+        require(is_valid, "Proof invalid!");
+
+        for (uint256 i = 0; i < newRecords.length; i++) {
+            Insert(uint256(newRecords[i]));
+            emit TransferHash(newRecords[i], memo[i]);
+        }
+
+        return true;
+    }
+
+    function ApproveTransaction(
+        bytes32[] memory serialNumbers,
+        bytes32[] memory newRecords,
+        bytes32[] memory memo,
+        bytes32 digest
+        // uint256[8] memory in_proof TODO, re-add when proofs are working
+    ) public returns(bool) {
+        require(newRecords.length > 0, "newRecord list should not be empty");
+        require(newRecords.length == memo.length, "Length of new records and memo must match");
+
         // TODO
         // Add check if record is dummy
         // If dummy then construct an instance for the snark proof

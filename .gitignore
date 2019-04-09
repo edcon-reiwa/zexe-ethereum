@@ -10,10 +10,15 @@ Cargo.lock
 **/*.rs.bk
 
 .idea
+.DS_STORE
 
 # Solidity builds
 solidity/build/*
+<<<<<<< HEAD
 .DS_STORE
 zk-plasma/venv/*
 .vscode
 *.pyc
+=======
+client/src/contracts/*
+>>>>>>> e7198c31725c50a760223261f6ac343713421fd6
