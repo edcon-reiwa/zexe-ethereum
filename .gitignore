@@ -16,3 +16,4 @@ solidity/build/*
 .DS_STORE
 zk-plasma/venv/*
 .vscode
+*.pyc
