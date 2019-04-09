@@ -15,6 +15,9 @@ contract Ledger {
     // Stores all of the valid merkle tree roots
     mapping (uint256 => bool) public roots;
 
+    // verifier key
+    uint256[14] private m_vk;
+    uint256[] private m_gammaABC;
 
     event TransferHash(uint256 indexed newRecord, bytes32 indexed contentHash);
 
@@ -100,16 +103,18 @@ contract Ledger {
         uint256 in_root,
         uint256[8] memory proof
     )
-        public view returns (bool)
-    {
-        // TODO
+        public view returns (bool) {
         // construct public input to the zkSNARK
         // public parameters: ledger digest st, old record serial numer sn,
         // new record commitments cm, transaction memorandum, memo
         uint256[] memory snark_input = new uint256[](1);
         snark_input[0] = HashPublicInputs(serialNumbers, newRecords, memo, in_root);
 
-        // Verify snarks proof
+        // TODO
+        // Retrieve verifying key
+        uint256[14] memory vk;
+        uint256[] memory vk_gammaABC;
+        (vk, vk_gammaABC) = GetVerifyingKey();
 
         return true;
     }
@@ -120,8 +125,7 @@ contract Ledger {
         bytes32[] memory memo,
         uint256 in_root
     )
-        public pure returns (uint256)
-    {
+        public pure returns (uint256) {
         uint256 length = serialNumbers.length + newRecords.length + memo.length + 1;
         uint256[] memory inputs_to_hash = new uint256[](length);
 
@@ -144,5 +148,16 @@ contract Ledger {
         inputs_to_hash[length - 1] = in_root;
 
         return MiMC.Hash(inputs_to_hash);
+    }
+
+    function GetVerifyingKey ()
+        public view returns (uint256[14] memory out_vk, uint256[] memory out_gammaABC) {
+            return (m_vk, m_gammaABC);
+    }
+
+    function SetVerifyingKey(uint256[14] memory in_vk, uint256[] memory in_gammaABC)
+        public {
+            m_vk = in_vk;
+            m_gammaABC = in_gammaABC;
     }
 }
