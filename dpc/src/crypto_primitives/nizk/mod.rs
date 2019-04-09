@@ -1,4 +1,4 @@
-use algebra::bytes::ToBytes;
+// use algebra::bytes::ToBytes;
 use rand::Rng;
 
 pub mod gm17;
@@ -13,7 +13,8 @@ pub trait NIZK {
     type ProvingParameters: Clone;
     type VerificationParameters: Clone + Default + From<Self::PreparedVerificationParameters>;
     type PreparedVerificationParameters: Clone + Default + From<Self::VerificationParameters>;
-    type Proof: ToBytes + Clone + Default;
+    // type Proof: ToBytes + Clone + Default;
+    type Proof: Clone + Default ;
 
     fn setup<R: Rng>(
         circuit: Self::Circuit,

@@ -5,14 +5,15 @@ use std::string::String;
 use rand::{SeedableRng, XorShiftRng};
 use primitives::hexdisplay::{HexDisplay, AsBytesRef};
 
-pub mod instantiated;
-use instantiated::*;
+// pub mod instantiated;
+// use instantiated::*;
 use ::dpc::{
     dpc::plain_dpc::*,
     dpc::{DPCScheme, Record},
     crypto_primitives::*,
     ledger::*,
 };
+use dpc::dpc::plain_dpc::instantiated::*;
 use dpc::plain_dpc::{
     predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit},
     LocalData,
@@ -20,6 +21,9 @@ use dpc::plain_dpc::{
 };
 use algebra::{to_bytes, ToBytes};
 use snark::gm17::PreparedVerifyingKey;
+// use bellman_ce::groth16::PreparedVerifyingKey;
+
+pub mod groth16;
 
 fn main() {
     cli().unwrap_or_else(|e| {

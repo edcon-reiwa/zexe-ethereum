@@ -13,13 +13,13 @@ use pairing_ce::Engine;
 use rand::Rng;
 use failure::Error;
 
-pub struct Groth16<E: Engine, C: Circuit<E>, V: ToEngineFr1<E> + ?Sized> {
+pub struct Groth16<E: Engine, C: Circuit<E>, V: ToEngineFr<E> + ?Sized> {
     _engine: PhantomData<E>,
     _circuit: PhantomData<C>,
     _verifier_input: PhantomData<V>,
 }
 
-impl<E: Engine, C: Circuit<E>, V: ToEngineFr1<E> + ?Sized> NIZK for Groth16<E, C, V> {
+impl<E: Engine, C: Circuit<E>, V: ToEngineFr<E> + ?Sized> NIZK for Groth16<E, C, V> {
     type Circuit = C;
     type AssignedCircuit = C;
     type ProvingParameters = Parameters<E>;

@@ -10,7 +10,7 @@ macro_rules! curve_impl {
         $compressed:ident,
         $pairing:ident
     ) => {
-        #[derive(Copy, Clone, PartialEq, Eq, Debug)]
+        #[derive(Copy, Clone, PartialEq, Eq, Debug, Default)]
         pub struct $affine {
             pub(crate) x: $basefield,
             pub(crate) y: $basefield,
@@ -919,7 +919,7 @@ pub mod g1 {
         }
     }
 
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, Default)]
     pub struct G1Prepared(pub(crate) G1Affine);
 
     impl G1Prepared {
@@ -1609,7 +1609,7 @@ pub mod g2 {
         }
     }
 
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, Default)]
     pub struct G2Prepared {
         pub(crate) coeffs: Vec<(Fq2, Fq2, Fq2)>,
         pub(crate) infinity: bool,

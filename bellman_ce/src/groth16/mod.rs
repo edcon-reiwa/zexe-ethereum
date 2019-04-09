@@ -8,6 +8,8 @@ use crate::{
     SynthesisError
 };
 
+use algebra::bytes::ToBytes;
+
 use crate::source::SourceBuilder;
 use std::io::{self, Read, Write};
 use std::sync::Arc;
@@ -24,7 +26,7 @@ pub use self::generator::*;
 pub use self::prover::*;
 pub use self::verifier::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Proof<E: Engine> {
     pub a: E::G1Affine,
     pub b: E::G2Affine,
@@ -36,6 +38,16 @@ impl<E: Engine> PartialEq for Proof<E> {
         self.a == other.a &&
         self.b == other.b &&
         self.c == other.c
+    }
+}
+
+impl<E: Engine> ToBytes for Proof<E> {
+    fn write<W: Write>(&self, mut writer: W) -> io::Result<()> {
+        writer.write_all(self.a.into_compressed().as_ref())?;
+        writer.write_all(self.b.into_compressed().as_ref())?;
+        writer.write_all(self.c.into_compressed().as_ref())?;
+
+        Ok(())
     }
 }
 
@@ -97,7 +109,7 @@ impl<E: Engine> Proof<E> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct VerifyingKey<E: Engine> {
     // alpha in g1 for verifying and for creating A/C elements of
     // proof. Never the point at infinity.
@@ -216,7 +228,7 @@ impl<E: Engine> VerifyingKey<E> {
 pub struct Parameters<E: Engine> {
     pub vk: VerifyingKey<E>,
 
-    // Elements of the form ((tau^i * t(tau)) / delta) for i between 0 and 
+    // Elements of the form ((tau^i * t(tau)) / delta) for i between 0 and
     // m-2 inclusive. Never contains points at infinity.
     pub h: Arc<Vec<E::G1Affine>>,
 
@@ -381,6 +393,7 @@ impl<E: Engine> Parameters<E> {
     }
 }
 
+#[derive(Default)]
 pub struct PreparedVerifyingKey<E: Engine> {
     /// Pairing result of alpha*beta
     alpha_g1_beta_g2: E::Fqk,
