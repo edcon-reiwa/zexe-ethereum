@@ -1,14 +1,18 @@
 from web3 import Web3, HTTPProvider
 import json
+import os
 
 
 class RootChain(object):
     def __init__(self):
         self.web3 = Web3(HTTPProvider('http://localhost:8545'))
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
-        with open("./Ledger.abi") as f:
+
+        dirname = os.path.dirname(__file__)
+
+        with open(os.path.join(dirname, "./Ledger.abi")) as f:
             abi = json.load(f)
-        with open("./Ledger.bin") as f:
+        with open(os.path.join(dirname, "./Ledger.bin")) as f:
             binary = f.read()
         deploy = self.web3.eth.contract(bytecode=binary, abi=abi)
         tx_hash = deploy.constructor().transact()
