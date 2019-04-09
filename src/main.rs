@@ -23,7 +23,6 @@ use dpc::plain_dpc::{
     predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit, MintPredicateCircuit, ConservePredicateCircuit},
     LocalData,
     predicate::PrivatePredInput,
-    // address::{alice_keypair, bob_keypair},
     DPC
 };
 use algebra::{to_bytes, ToBytes};
@@ -108,8 +107,6 @@ fn cli() -> Result<(), String> {
                 DPC::create_address_helper(&parameters.comm_and_crh_pp, &genesis_metadata, &mut rng)
                     .unwrap();
 
-            // let genesis_address = alice_keypair();
-
             let genesis_sn_nonce =
                 SnNonceCRH::evaluate(&parameters.comm_and_crh_pp.sn_nonce_crh_pp, &[34u8; 1]).unwrap();
 
@@ -146,6 +143,7 @@ fn cli() -> Result<(), String> {
 
             // Generate dummy input records having as address the genesis address.
             let old_asks = vec![genesis_address.secret_key.clone(); NUM_INPUT_RECORDS];
+            // println!("alice secret key:{:?}", genesis_address.secret_key);
 
             let mut old_records = vec![];
             for i in 0..NUM_INPUT_RECORDS {
@@ -180,8 +178,6 @@ fn cli() -> Result<(), String> {
             let new_address =
                 DPC::create_address_helper(&parameters.comm_and_crh_pp, &new_metadata, &mut rng).unwrap();
 
-            // let new_address = bob_keypair();
-
             // Create a payload.
             let new_dummy_payload = [2u8; 32];
 
@@ -196,6 +192,10 @@ fn cli() -> Result<(), String> {
             let new_predicate = Predicate::new(genesis_pred_vk_bytes.clone());
 
             let new_apks = vec![new_address.public_key.clone(); NUM_OUTPUT_RECORDS];
+            let mut v = [0u8; 64];
+            new_address.public_key.write(&mut v[..]).unwrap();
+            println!("public key:{:?}", hex::encode(&v[..]));
+
             // let new_payloads = vec![new_payload.clone(); NUM_OUTPUT_RECORDS];
             let new_payloads = vec![new_mint_payload];
             let new_birth_predicates = vec![new_predicate.clone(); NUM_OUTPUT_RECORDS];
