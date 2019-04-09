@@ -2,6 +2,7 @@ pragma solidity ^0.5.0;
 
 import "./utils/MerkleTree.sol";
 import "./utils/Verifier.sol";
+import "./utils/MiMC.sol";
 
 
 contract Ledger {
@@ -81,7 +82,8 @@ contract Ledger {
             nullifiers[serialNumbers[i]] = true;
         }
 
-        bool is_valid = VerifyProof(in_root, in_nullifier, GetExtHash(), in_proof);
+        // bool is_valid = VerifyProof(in_root, in_nullifier, GetExtHash(), in_proof);
+        bool is_valid = VerifyProof(serialNumbers, newRecords, memo, in_root, in_proof);
 
         require( is_valid, "Proof invalid!" );
 
@@ -92,15 +94,55 @@ contract Ledger {
     }
 
     function VerifyProof(
+        uint256[] memory serialNumbers,
+        uint256[] memory newRecords,
+        bytes32[] memory memo,
         uint256 in_root,
-        uint256 in_nullifier,
-        uint256 in_exthash,
         uint256[8] memory proof
     )
         public view returns (bool)
     {
         // TODO
+        // construct public input to the zkSNARK
+        // public parameters: ledger digest st, old record serial numer sn,
+        // new record commitments cm, transaction memorandum, memo
+        uint256[] memory snark_input = new uint256[](1);
+        snark_input[0] = HashPublicInputs(serialNumbers, newRecords, memo, in_root);
+
         // Verify snarks proof
+
         return true;
+    }
+
+    function HashPublicInputs(
+        uint256[] memory serialNumbers,
+        uint256[] memory newRecords,
+        bytes32[] memory memo,
+        uint256 in_root
+    )
+        public pure returns (uint256)
+    {
+        uint256 length = serialNumbers.length + newRecords.length + memo.length + 1;
+        uint256[] memory inputs_to_hash = new uint256[](length);
+
+        for (uint256 i = 0; i < serialNumbers.length; i++) {
+            inputs_to_hash[i] = serialNumbers[i];            
+        }
+
+        uint256 current_length = serialNumbers.length;
+
+        for (uint256 i = 0; i < newRecords.length; i++) {
+            inputs_to_hash[i + current_length] = newRecords[i];            
+        }
+        
+        current_length = serialNumbers.length + newRecords.length;
+
+        for (uint256 i = 0; i < memo.length; i++) {
+            inputs_to_hash[i + current_length] = uint256(memo[i]);            
+        }
+
+        inputs_to_hash[length - 1] = in_root;
+
+        return MiMC.Hash(inputs_to_hash);
     }
 }
