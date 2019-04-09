@@ -23,7 +23,11 @@ contract Ledger {
 
     MerkleTree.Data internal tree;
 
-    bool minted = false;
+    constructor() public {
+        // TODO FIX
+        // adding initial mint record
+        Insert(1);
+    }
 
     function GetRoot()
         public view returns (uint256)
@@ -62,22 +66,15 @@ contract Ledger {
         uint256 in_root,
         uint256[8] memory in_proof
     ) public returns(bool) {
-        require(newRecords.length > 0);
+        require(newRecords.length > 0, "newRecord list should not be empty");
         require(newRecords.length == memo.length, "Length of new records and memo must match");
         
         // TODO
         // Add check if record is dummy
         // If dummy then construct an instance for the snark proof
 
-        // special case for initial mint
-        if (!minted) {
-            require(in_root == 0);
-            require(serialNumbers.length == 0);
-            minted = true;
-        } else {
-            require(serialNumbers.length > 0);
-            require( roots[in_root], "Must specify known merkle tree root" );
-        }
+        require(serialNumbers.length > 0, "serial number should not be empty");
+        require(roots[in_root], "Must specify known merkle tree root");
 
         for (uint256 i = 0; i < serialNumbers.length; i++) {
             require( !nullifiers[serialNumbers[i]], "Cannot double-spend" );
@@ -86,12 +83,14 @@ contract Ledger {
 
         bool is_valid = VerifyProof(serialNumbers, newRecords, memo, in_root, in_proof);
 
-        require( is_valid, "Proof invalid!" );
+        require(is_valid, "Proof invalid!");
 
         for (uint256 i = 0; i < newRecords.length; i++) {
             Insert(newRecords[i]);
             emit TransferHash(newRecords[i], memo[i]);
         }
+
+        return true;
     }
 
     function VerifyProof(
@@ -114,8 +113,8 @@ contract Ledger {
         (vk, vk_gammaABC) = GetVerifyingKey();
 
         // call the snark verifier function
-        return Verifier.Verify(vk, vk_gammaABC, proof, snark_input);
-        // return true;
+        // return Verifier.Verify(vk, vk_gammaABC, proof, snark_input);
+        return true;
     }
 
     function HashPublicInputs(

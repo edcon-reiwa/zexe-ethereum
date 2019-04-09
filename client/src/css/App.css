@@ -1,0 +1,79 @@
+body {
+  background: #1E2837;
+  color: white;
+}
+
+.App {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.title {
+  color: #FF4E67;
+}
+
+.account-section {
+  width: 80%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.account-top-section {
+  margin-top: 20px;
+}
+
+.account-title {
+  color: #88C4FF;
+  width: 100%;
+}
+
+.account-section h4 {
+  text-align: left;
+}
+
+.account-key {
+  color: #B6FF82;
+}
+
+.send-key {
+  margin-bottom: 0px;
+}
+
+.send-form input {
+  min-width: 500px;
+}
+
+.send-form button {
+  float: left;
+  background: #3a87d2;
+}
