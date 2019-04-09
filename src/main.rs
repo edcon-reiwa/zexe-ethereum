@@ -43,6 +43,11 @@ fn cli() -> Result<(), String> {
     const DEFAULT_AMOUNT: &str = "100";
     const DEFAULT_MODE: &str = "MINT";
 
+    const PUBLIC_KEY_A: &str = "0x37c24f539dab1f19a438890684cf7d31b04d26ac487af43effd536859b12d89e80d54c890e342c0c7dede3c450c004b0be841293b059cc8d076c710fa20e4226";
+    const PRIVATE_KEY_A: &str = "f7a9c187e8ff9c25ee8841990118ff23af4c4fd5cd4d03d5e1457482cbe91b6d";
+    const PUBLIC_KEY_B: &str = "0x2015b69865e50ec55c3c0501187995501fc399e4ccbdd2544e1ca775cd7d7fe0144c73005ec019a6b520fe5ec5f26d7f18e4bee3ccfeb554a40078896521ef08";
+    const PRIVATE_KEY_B: &str = "a092b53d4f6902421a5440f246ae5a50d9b4a8cfb02a80a5873e15438b77be0b";
+
     let matches = App::new("zexe-eth")
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .version("0.1.0")
@@ -321,16 +326,21 @@ fn cli() -> Result<(), String> {
 
             assert_eq!(genesis_pred_vk_bytes.len(), 48);
 
-            let record_1 = SerializableRecord { address_public_key: [0u8; 32], payload: new_payloads[0],
-                birth_predicate: genesis_pred_vk_bytes.clone(), death_predicate: genesis_pred_vk_bytes.clone(),
-                serial_number: old_serial_number1_v, commitment: new_commitment1_v };
+            let record_1 = SerializableRecord {
+                address_public_key: PUBLIC_KEY_B.to_string(),
+                payload: String::from("0x") + &*HexDisplay::from(&new_payloads[0] as &AsBytesRef).to_string(),
+                birth_predicate: String::from("0x") + &*HexDisplay::from(&genesis_pred_vk_bytes.clone() as &AsBytesRef).to_string(),
+                death_predicate: String::from("0x") + &*HexDisplay::from(&genesis_pred_vk_bytes.clone() as &AsBytesRef).to_string(),
+                serial_number: String::from("0x") + &*HexDisplay::from(&old_serial_number1_v as &AsBytesRef).to_string(),
+                commitment: String::from("0x") + &*HexDisplay::from(&new_commitment1_v as &AsBytesRef).to_string()
+            };
 
             // Convert the Record to a JSON string.
             let serialized = serde_json::to_string(&record_1).unwrap();
 
             let path = "/tmp/record.json";
             write_to_file(Path::new(path), &serialized);
-            upload_to_IPFS(path);
+            upload_to_ipfs(path);
 
 
             println!(
@@ -360,12 +370,12 @@ fn cli() -> Result<(), String> {
 
 #[derive(Serialize)]
 struct SerializableRecord {
-    address_public_key: [u8; 32],
-    payload: [u8; 32],
-    birth_predicate: Vec<u8>, // 48 bytes
-    death_predicate: Vec<u8>, // 48 bytes
-    serial_number: [u8; 32],
-    commitment: [u8; 32],
+    address_public_key: String, // hex of 32 bytes
+    payload: String, // hex of 32 bytes
+    birth_predicate: String, // hex of 48 bytes
+    death_predicate: String, // hex of 48 bytes
+    serial_number: String, // hex of 32 bytes
+    commitment: String, // hex of 32 bytes
 }
 
 fn write_to_file(path: &Path, message: &str) {
@@ -387,7 +397,7 @@ fn write_to_file(path: &Path, message: &str) {
     }
 }
 
-fn upload_to_IPFS(path: &str) {
+fn upload_to_ipfs(path: &str) {
     let form = reqwest::multipart::Form::new()
         .file("arg", path).unwrap();
 
