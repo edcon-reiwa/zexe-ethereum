@@ -37,8 +37,8 @@ use dpc::dpc::plain_dpc::{
 
 use dpc::ledger::{CommPath, Digest, IdealLedger};
 
-pub const NUM_INPUT_RECORDS: usize = 2;
-pub const NUM_OUTPUT_RECORDS: usize = 2;
+pub const NUM_INPUT_RECORDS: usize = 1;
+pub const NUM_OUTPUT_RECORDS: usize = 1;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct SnNonceWindow;

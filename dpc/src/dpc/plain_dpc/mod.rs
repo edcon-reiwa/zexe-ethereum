@@ -283,7 +283,7 @@ impl<Components: PlainDPCComponents> DPC<Components> {
     pub fn generate_record<R: Rng>(
         parameters: &CommAndCRHPublicParameters<Components>,
         sn_nonce: &<Components::SnNonceH as FixedLengthCRH>::Output,
-        address_public_key: &AddressPublicKey<Components>,
+        address_public_key: &AddressPublicKey,
         is_dummy: bool,
         payload: &[u8; 32],
         birth_predicate: &DPCPredicate<Components>,

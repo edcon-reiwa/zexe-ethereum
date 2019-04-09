@@ -17,5 +17,5 @@ cargo +nightly build --release
 
 ## Generate Tx components
 ```
-./target/release/zexe-eth gen-tx
+./target/release/zexe-eth gen-tx -- mode MINT --amount 100
 ```

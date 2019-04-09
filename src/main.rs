@@ -137,6 +137,7 @@ fn cli() -> Result<(), String> {
 
             // Generate dummy input records having as address the genesis address.
             let old_asks = vec![genesis_address.secret_key.clone(); NUM_INPUT_RECORDS];
+            println!("old_asks:{:?}", genesis_address.secret_key);
             let mut old_records = vec![];
             for i in 0..NUM_INPUT_RECORDS {
                 let old_sn_nonce = SnNonceCRH::evaluate(
@@ -161,6 +162,8 @@ fn cli() -> Result<(), String> {
             let amount_str = sub_matches.value_of("amount").unwrap();
             let amount: u32 = amount_str.parse().unwrap();
 
+            let mode_str = sub_matches.value_of("mode").unwrap();
+
             // Construct new records.
 
             // Create an address for an actual new record.
@@ -171,16 +174,19 @@ fn cli() -> Result<(), String> {
             // Create a payload.
             let new_dummy_payload = [2u8; 32];
 
-            // if mode == "MINT"
+            // Create a minted payload
             let mut new_mint_payload = [0u8; 32];
-            (&mut new_mint_payload[0..4]).write_u32::<LittleEndian>(amount).unwrap();
+
+            if mode_str == "MINT" {
+                (&mut new_mint_payload[0..4]).write_u32::<LittleEndian>(amount).unwrap();
+            }
 
             // Set the new records' predicate to be the "always-accept" predicate.
             let new_predicate = Predicate::new(genesis_pred_vk_bytes.clone());
 
             let new_apks = vec![new_address.public_key.clone(); NUM_OUTPUT_RECORDS];
             // let new_payloads = vec![new_payload.clone(); NUM_OUTPUT_RECORDS];
-            let new_payloads = vec![new_dummy_payload, new_mint_payload];
+            let new_payloads = vec![new_mint_payload];
             let new_birth_predicates = vec![new_predicate.clone(); NUM_OUTPUT_RECORDS];
             let new_death_predicates = vec![new_predicate.clone(); NUM_OUTPUT_RECORDS];
             let new_dummy_flags = vec![false; NUM_OUTPUT_RECORDS];
@@ -280,11 +286,8 @@ fn cli() -> Result<(), String> {
 
             assert!(InstantiatedDPC::verify(&parameters, &transaction, &ledger).unwrap());
 
-
             let mut old_serial_number1_v = [0u8; 32];
-            let mut old_serial_number2_v = [0u8; 32];
             let mut new_commitment1_v = [0u8; 32];
-            let mut new_commitment2_v = [0u8; 32];
             let mut stuff_digest_v = [0u8; 32];
             // let stuff_core_proof_v: Vec<u8> = vec![];
             // let stuff_predicate_proof_v: Vec<u8> = vec![];
@@ -292,10 +295,8 @@ fn cli() -> Result<(), String> {
             let mut stuff_local_data_comm_v = [0u8; 32];
 
             transaction.old_serial_numbers[0].write(&mut old_serial_number1_v[..]).unwrap();
-            transaction.old_serial_numbers[1].write(&mut old_serial_number2_v[..]).unwrap();
 
             transaction.new_commitments[0].write(&mut new_commitment1_v[..]).unwrap();
-            transaction.new_commitments[1].write(&mut new_commitment2_v[..]).unwrap();
 
             transaction.stuff.digest.write(&mut stuff_digest_v[..]).unwrap();
             // transaction.stuff.core_proof.write(stuff_core_proof_v).unwrap();
@@ -303,25 +304,18 @@ fn cli() -> Result<(), String> {
             transaction.stuff.predicate_comm.write(&mut stuff_predicate_comm_v[..]).unwrap();
             transaction.stuff.local_data_comm.write(&mut stuff_local_data_comm_v[..]).unwrap();
 
-            // println!("len1: {:?}", new_commitments_v.len());
-            // println!("len2: {:?}", stuff_predicate_comm_v.len());
-
             println!(
                 "
-                \nold serial number1: 0x{}
-                \nold serial number2: 0x{}
-                \nnew_commitment1: 0x{}
-                \nnew_commitment2: 0x{}
+                \nold serial number: 0x{}
+                \nnew_commitment: 0x{}
                 \nledger digest: 0x{}
                 \npredicate commitment: 0x{}
                 \nlocal data commitment: 0x{}
                 ",
-                //  \ncore proof: 0x{}
+                // \ncore proof: 0x{}
                 // \npredicate proof: 0x{}
                 HexDisplay::from(&old_serial_number1_v as &AsBytesRef),
-                HexDisplay::from(&old_serial_number2_v as &AsBytesRef),
                 HexDisplay::from(&new_commitment1_v as &AsBytesRef),
-                HexDisplay::from(&new_commitment2_v as &AsBytesRef),
                 HexDisplay::from(&stuff_digest_v as &AsBytesRef),
                 // HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
                 // HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
