@@ -38,8 +38,8 @@ fn cli() -> Result<(), String> {
         .version("0.1.0")
         .author("Osuke Sudo")
         .about("Zexe on ethereum")
-        .subcommand(SubCommand::with_name("setup")
-            .about("Performs a trusted setup for a given constraint system")
+        .subcommand(SubCommand::with_name("gen-tx")
+            .about("Performs a trusted setup for a given constraint system and generate a transaction")
                 .arg(Arg::with_name("proving-key-path")
                     .short("p")
                     .long("proving-key-path")
@@ -62,7 +62,7 @@ fn cli() -> Result<(), String> {
         .get_matches();
 
     match matches.subcommand() {
-        ("setup", Some(sub_maches)) => {
+        ("gen-tx", Some(sub_maches)) => {
             println!("Peforming setup...");
             let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
 
@@ -71,6 +71,7 @@ fn cli() -> Result<(), String> {
                 <InstantiatedDPC as DPCScheme<MerkleTreeIdealLedger>>::setup(&ledger_parameters, &mut rng)
                     .expect("DPC setup failed");
 
+            println!("Generating transaction...");
             #[cfg(debug_assertions)]
             let pred_nizk_pvk: PreparedVerifyingKey<_> = parameters.pred_nizk_pp.vk.clone().into();
 
