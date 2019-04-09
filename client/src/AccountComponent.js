@@ -152,7 +152,7 @@ class AccountComponent extends Component {
       }
 
       for (var i in events) {
-        this.addCommitment(events[i].returnValues[2], this.state.txValue)
+        this.addCommitment(events[i].returnValues[1], this.state.txValue)
       }
     })
   }
