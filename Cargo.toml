@@ -19,6 +19,7 @@ failure = { version = "0.1.1" }
 failure_derive = { version = "0.1.1" }
 primitives = { package = "substrate-primitives", git = "https://github.com/paritytech/substrate", rev = '9112a28af677b75cd6f935dda34d283bb4f676e7' }
 byteorder = "1"
+hex = "0.3.2"
 
 [[bin]]
 name = 'zexe-eth'
