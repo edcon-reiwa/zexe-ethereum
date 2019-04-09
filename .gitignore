@@ -15,3 +15,4 @@ Cargo.lock
 solidity/build/*
 .DS_STORE
 zk-plasma/venv/*
+.vscode
