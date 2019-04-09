@@ -250,8 +250,8 @@ fn cli() -> Result<(), String> {
             let old_serial_numbers_v: Vec<u8> = vec![];
             let new_commitments_v: Vec<u8> = vec![];
             let stuff_digest_v: Vec<u8> = vec![];
-            let stuff_core_proof_v: Vec<u8> = vec![];
-            let stuff_predicate_proof_v: Vec<u8> = vec![];
+            // let stuff_core_proof_v: Vec<u8> = vec![];
+            // let stuff_predicate_proof_v: Vec<u8> = vec![];
             let stuff_predicate_comm_v: Vec<u8> = vec![];
             let stuff_local_data_comm_v: Vec<u8> = vec![];
 
@@ -260,8 +260,8 @@ fn cli() -> Result<(), String> {
             transaction.new_commitments.write(new_commitments_v.clone()).unwrap();
 
             transaction.stuff.digest.write(stuff_digest_v.clone()).unwrap();
-            transaction.stuff.core_proof.write(stuff_core_proof_v.clone()).unwrap();
-            transaction.stuff.predicate_proof.write(stuff_predicate_proof_v.clone()).unwrap();
+            // transaction.stuff.core_proof.write(stuff_core_proof_v.clone()).unwrap();
+            // transaction.stuff.predicate_proof.write(stuff_predicate_proof_v.clone()).unwrap();
             transaction.stuff.predicate_comm.write(stuff_predicate_comm_v.clone()).unwrap();
             transaction.stuff.local_data_comm.write(stuff_local_data_comm_v.clone()).unwrap();
 
@@ -270,16 +270,17 @@ fn cli() -> Result<(), String> {
                 \nold serial numbers: 0x{}
                 \nnew_commitments: 0x{}
                 \nledger digest: 0x{}
-                \ncore proof: 0x{}
-                \npredicate proof: 0x{}
+
                 \npredicate commitment: 0x{}
                 \nlocal data commitment: 0x{}
                 ",
+                //  \ncore proof: 0x{}
+                // \npredicate proof: 0x{}
                 HexDisplay::from(&&old_serial_numbers_v[..] as &AsBytesRef),
                 HexDisplay::from(&&new_commitments_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_digest_v[..] as &AsBytesRef),
-                HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
-                HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
+                // HexDisplay::from(&&stuff_core_proof_v[..] as &AsBytesRef),
+                // HexDisplay::from(&&stuff_predicate_proof_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_predicate_comm_v[..] as &AsBytesRef),
                 HexDisplay::from(&&stuff_local_data_comm_v[..] as &AsBytesRef),
                 );
