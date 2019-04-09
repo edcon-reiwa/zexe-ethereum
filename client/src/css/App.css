@@ -59,6 +59,7 @@ body {
 
 .account-section h4 {
   text-align: left;
+  word-break: break-all;
 }
 
 .account-key {
@@ -70,10 +71,23 @@ body {
 }
 
 .send-form input {
-  min-width: 500px;
+  width: 90%;
+  color: #1E2837;
 }
 
 .send-form button {
   float: left;
   background: #3a87d2;
+}
+
+.transaction-table {
+  margin-top: 20px;
+}
+
+.spent-column, .value-column {
+  text-align: center;
+}
+
+.spent-column {
+  color: green;
 }
