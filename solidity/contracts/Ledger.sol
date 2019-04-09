@@ -110,13 +110,14 @@ contract Ledger {
         uint256[] memory snark_input = new uint256[](1);
         snark_input[0] = HashPublicInputs(serialNumbers, newRecords, memo, in_root);
 
-        // TODO
         // Retrieve verifying key
         uint256[14] memory vk;
         uint256[] memory vk_gammaABC;
         (vk, vk_gammaABC) = GetVerifyingKey();
 
-        return true;
+        // call the snark verifier function
+        return Verifier.Verify(vk, vk_gammaABC, proof, snark_input);
+        // return true;
     }
 
     function HashPublicInputs(
