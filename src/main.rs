@@ -14,7 +14,7 @@ use ::dpc::{
     ledger::*,
 };
 use dpc::plain_dpc::{
-    predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit},
+    predicate_circuit::{PredicateLocalData, EmptyPredicateCircuit, MintPredicateCircuit, ConservePredicateCircuit},
     LocalData,
     predicate::PrivatePredInput,
     DPC
@@ -32,6 +32,8 @@ fn main() {
 fn cli() -> Result<(), String> {
     const VERIFICATION_KEY_PATH: &str = "verification.params";
     const PROVING_KEY_PATH: &str = "proving.params";
+    const DEFAULT_AMOUNT: &str = "100";
+    const DEFAULT_MODE: &str = "MINT";
 
     let matches = App::new("zexe-eth")
         .setting(AppSettings::SubcommandRequiredElseHelp)
@@ -58,11 +60,27 @@ fn cli() -> Result<(), String> {
                     .required(false)
                     .default_value(VERIFICATION_KEY_PATH)
                 )
+                .arg(Arg::with_name("amount")
+                    .short("a")
+                    .long("amount")
+                    .help("The minted or transferred amount")
+                    .takes_value(true)
+                    .required(false)
+                    .default_value(DEFAULT_AMOUNT)
+                )
+                .arg(Arg::with_name("mode")
+                    .short("m")
+                    .long("mode")
+                    .help("The minted or transferred mode")
+                    .takes_value(true)
+                    .required(false)
+                    .default_value(DEFAULT_MODE)
+                )
         )
         .get_matches();
 
     match matches.subcommand() {
-        ("gen-tx", Some(sub_maches)) => {
+        ("gen-tx", Some(sub_matches)) => {
             println!("Peforming setup...");
             let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
 
@@ -108,7 +126,7 @@ fn cli() -> Result<(), String> {
             let genesis_memo = [1u8; 32];
 
             // Use genesis record, serial number, and memo to initialize the ledger.
-            let mut ledger = MerkleTreeIdealLedger::new(
+            let ledger = MerkleTreeIdealLedger::new(
                 ledger_parameters,
                 genesis_record.commitment(),
                 genesis_sn.clone(),
@@ -195,16 +213,20 @@ fn cli() -> Result<(), String> {
                 old_proof_and_vk
             };
 
+            let amount_str = sub_matches.value_of("amount").unwrap();
+            let amount: u32 = amount_str.parse().unwrap();
+
             let new_birth_vk_and_proof_generator = |local_data: &LocalData<Components>| {
                 let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
                 let mut new_proof_and_vk = vec![];
                 for i in 0..NUM_OUTPUT_RECORDS {
-                    let proof = PredicateNIZK::prove(
+                    let proof = MintPredicateNIZK::prove(
                         &parameters.pred_nizk_pp.pk,
-                        EmptyPredicateCircuit::new(
+                        MintPredicateCircuit::new(
                             &local_data.comm_and_crh_pp,
                             &local_data.local_data_comm,
                             i as u8,
+                            amount,
                         ),
                         &mut rng,
                     )

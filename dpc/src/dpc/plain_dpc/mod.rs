@@ -106,6 +106,18 @@ pub trait PlainDPCComponents: 'static + Sized {
         VerifierInput = PredicateLocalData<Self>,
     >;
 
+    type MintPredicateNIZK: NIZK<
+        Circuit = MintPredicateCircuit<Self>,
+        AssignedCircuit = MintPredicateCircuit<Self>,
+        VerifierInput = PredicateLocalData<Self>,
+    >;
+
+    type ConservePredicateNIZK: NIZK<
+        Circuit = ConservePredicateCircuit<Self>,
+        AssignedCircuit = ConservePredicateCircuit<Self>,
+        VerifierInput = PredicateLocalData<Self>,
+    >;
+
     // NIZK Verifier gadget for the "dummy predicate" that does nothing with its
     // input.
     type PredicateNIZKGadget: NIZKVerifierGadget<Self::PredicateNIZK, Self::ProofCheckE>;
@@ -237,6 +249,8 @@ impl<Components: PlainDPCComponents> DPC<Components> {
     ) -> Result<PredNIZKParameters<Components>, Error> {
         let (pk, pvk) =
             Components::PredicateNIZK::setup(EmptyPredicateCircuit::blank(comm_and_crh_pp), rng)?;
+
+
 
         let proof = Components::PredicateNIZK::prove(
             &pk,

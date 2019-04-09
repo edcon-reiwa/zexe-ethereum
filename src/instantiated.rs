@@ -113,6 +113,8 @@ impl PlainDPCComponents for Components {
     type PGadget = PRFGadget;
 
     type PredicateNIZK = PredicateNIZK<Self>;
+    type MintPredicateNIZK = MintPredicateNIZK<Self>;
+    type ConservePredicateNIZK = ConservePredicateNIZK<Self>;
     type PredicateNIZKGadget = PredicateNIZKGadget;
 
     type PredVkH = PredVkCRH;
@@ -143,6 +145,8 @@ pub type CoreCheckNIZK =
 pub type ProofCheckNIZK =
     Gm17<ProofCheckEngine, ProofCheckCircuit<Components>, ProofCheckVerifierInput<Components>>;
 pub type PredicateNIZK<C> = Gm17<CoreEngine, EmptyPredicateCircuit<C>, PredicateLocalData<C>>;
+pub type MintPredicateNIZK<C> = Gm17<CoreEngine, MintPredicateCircuit<C>, PredicateLocalData<C>>;
+pub type ConservePredicateNIZK<C> = Gm17<CoreEngine, ConservePredicateCircuit<C>, PredicateLocalData<C>>;
 pub type PRF = Blake2s;
 
 pub type MerkleTreeDigest = Digest<MerkleTreeCRH>;
