@@ -1,0 +1,5 @@
+web3
+flask
+pysha3
+py_ecc
+bitstring
