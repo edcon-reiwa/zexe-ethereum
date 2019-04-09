@@ -14,3 +14,4 @@ Cargo.lock
 # Solidity builds
 solidity/build/*
 .DS_STORE
+zk-plasma/venv/*
