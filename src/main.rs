@@ -69,8 +69,8 @@ fn cli() -> Result<(), String> {
             let ledger_parameters = MerkleTreeIdealLedger::setup(&mut rng).expect("Ledger setup failed");
             let parameters =
                 <InstantiatedDPC as DPCScheme<MerkleTreeIdealLedger>>::setup(&ledger_parameters, &mut rng)
-                    .expect("DPC setup failed");
 
+                    .expect("DPC setup failed");
             println!("Generating transaction...");
             #[cfg(debug_assertions)]
             let pred_nizk_pvk: PreparedVerifyingKey<_> = parameters.pred_nizk_pp.vk.clone().into();

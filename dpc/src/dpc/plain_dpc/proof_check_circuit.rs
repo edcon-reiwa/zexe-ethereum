@@ -15,7 +15,7 @@ use crate::{
 use algebra::utils::ToEngineFr;
 
 #[derive(Derivative)]
-#[derivative(Clone(bound = "C: PlainDPCComponents"))]
+#[derivative(Clone(bound = "C: PlainDPCComponents"))] 
 pub struct ProofCheckVerifierInput<C: PlainDPCComponents> {
     pub comm_and_crh_pp: CommAndCRHPublicParameters<C>,
     pub predicate_comm:  <C::PredVkComm as CommitmentScheme>::Output,

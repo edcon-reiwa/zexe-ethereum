@@ -8,10 +8,11 @@ Install rust:
 ```
 curl https://sh.rustup.rs -sSf | sh
 source $HOME/.cargo/env
+rustup install nightly
 ```
 then,
 ```
-cargo build --release
+cargo +nightly build --release
 ```
 
 ## Generate Tx components
