@@ -13,3 +13,4 @@ Cargo.lock
 
 # Solidity builds
 solidity/build/*
+.DS_STORE

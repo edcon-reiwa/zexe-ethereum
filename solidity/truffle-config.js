@@ -21,6 +21,7 @@
 // const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
+const path = require("path");
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
@@ -95,5 +96,7 @@ module.exports = {
       //  evmVersion: "byzantium"
       // }
     }
-  }
+  },
+
+  contracts_build_directory: path.join(__dirname, "../client/src/contracts")
 }

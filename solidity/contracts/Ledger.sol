@@ -60,7 +60,6 @@ contract Ledger {
         uint256[] memory newRecords,
         bytes32[] memory memo,
         uint256 in_root,
-        uint256 in_nullifier,
         uint256[8] memory in_proof
     ) public returns(bool) {
         require(newRecords.length > 0);
@@ -85,7 +84,6 @@ contract Ledger {
             nullifiers[serialNumbers[i]] = true;
         }
 
-        // bool is_valid = VerifyProof(in_root, in_nullifier, GetExtHash(), in_proof);
         bool is_valid = VerifyProof(serialNumbers, newRecords, memo, in_root, in_proof);
 
         require( is_valid, "Proof invalid!" );
