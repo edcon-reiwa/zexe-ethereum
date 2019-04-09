@@ -936,7 +936,7 @@ pub mod g1 {
         }
     }
 
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, Default)]
     pub struct G1Prepared(pub(crate) G1Affine);
 
     impl G1Prepared {
@@ -1029,7 +1029,7 @@ pub mod g2 {
 
     // impl Rand for G2 {
     //     fn rand<R: Rng>(rng: &mut R) -> Self {
-            
+
     //         let mut r = G2::one();
     //         let k = Fr::rand(rng);
     //         r.mul_assign(k);
@@ -1223,7 +1223,7 @@ pub mod g2 {
             let affine = self.into_affine_unchecked()?;
 
             // NB: Decompression guarantees that it is on the curve already.
-            
+
             Ok(affine)
         }
         fn into_affine_unchecked(&self) -> Result<G2Affine, GroupDecodingError> {
@@ -1371,7 +1371,7 @@ pub mod g2 {
         }
     }
 
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, Default)]
     pub struct G2Prepared {
         pub(crate) coeffs: Vec<(Fq2, Fq2, Fq2)>,
         pub(crate) infinity: bool,
@@ -1484,7 +1484,7 @@ pub mod g2 {
 
     #[test]
     fn test_addition_and_doubling() {
-    
+
         let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
 
         for _ in 0..1000 {
@@ -1568,7 +1568,7 @@ pub mod g2 {
                 assert!(b != tmp[i]);
                 assert!(c != tmp[i]);
             }
- 
+
         }
     }
 

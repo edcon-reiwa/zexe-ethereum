@@ -22,7 +22,7 @@ use super::{CurveAffine, Engine};
 
 use ff::{Field, ScalarEngine};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Bn256;
 
 // U value that originates this particular curve
@@ -81,7 +81,7 @@ impl Engine for Bn256 {
         }
 
         let mut f = Fq12::one();
-        
+
         for i in (1..SIX_U_PLUS_2_NAF.len()).rev() {
             if i != SIX_U_PLUS_2_NAF.len() - 1 {
                 f.square();
@@ -399,7 +399,7 @@ impl G2Prepared {
 
             let mut ztsquared = r.z;
             ztsquared.square();
-            
+
             t10.sub_assign(&ztsquared);
 
             // corresponds to line 18
@@ -470,7 +470,7 @@ use rand::{Rand, SeedableRng, XorShiftRng};
 fn test_pairing() {
     use {CurveProjective};
     let mut g1 = G1::one();
-    
+
     let mut g2 = G2::one();
     g2.double();
 

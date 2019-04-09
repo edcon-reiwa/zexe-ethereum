@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 clap = "~2.32"
 dpc = { path = "dpc" }
-algebra = { git = "https://github.com/osuketh/zexe" }
+algebra = { path = "algebra" }
 snark = { git = "https://github.com/osuketh/zexe"}
 snark-gadgets = { git = "https://github.com/osuketh/zexe"}
 # pairing_ce = { git = "https://github.com/matter-labs/pairing" }
@@ -28,5 +28,6 @@ path = 'src/main.rs'
 members = [
     "bellman_ce",
     "dpc",
-    "pairing_ce"
+    "pairing_ce",
+    "algebra"
 ]

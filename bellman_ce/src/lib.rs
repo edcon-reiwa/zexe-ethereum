@@ -23,8 +23,8 @@ mod group;
 mod source;
 mod multiexp;
 
-#[cfg(test)]
-mod tests;
+// #[cfg(test)]
+// mod tests;
 
 cfg_if! {
     if #[cfg(feature = "multicore")] {
