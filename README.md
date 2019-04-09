@@ -58,3 +58,39 @@ transaction = {
     "in_proof": 21321321321
 }
 ```
+
+## Running the web interface locally
+Deploy the Leger Smart Contract
+```
+cd soldity
+truffle migrate
+```
+
+Deploy the ENS contracts
+```
+cd ens
+truffle migrate
+```
+Starting the web interface
+```
+cd client
+npm run start
+```
+
+### Notes
+##### Generating and executing transactions
+- `Transaction Generation` section is currently not integrated and only a mock. Transaction parameters need to be generated using the rust scripts
+- Transferring is still not implemented but shouldn't be that different from minting
+- Mint transaction parameters should be copied from the rust script output
+- Past transactions (commitments of the newly minted tokens) are saved in the browser's local storage
+- Current balance is constructed from these transaction records
+- Deleting local storage will result in losing access to past records
+
+##### ENS Management
+- The account used to deploy the ENS contracts becomes the owner of the `.eth` domain
+- `.eth` can be configured to anything else in the migration script `ens/migrations/2_deploy_contracts.js`
+- Ownership can be transferred
+- Anyone can regsister a subdomain from the web interface
+    - eg. If a user registers Address: `0x1234...`, ENS Domain: `alice`, `0x1234...` becomes the owner of `alice.eth`
+- Typing `alice.eth` will automatically be converted to the registered address
+    - Testable through the `To:` field in `Transaction Generation`
