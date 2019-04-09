@@ -180,3 +180,137 @@ impl<C: PlainDPCComponents> Circuit<C::E> for EmptyPredicateCircuit<C> {
         Ok(())
     }
 }
+
+pub struct MintPredicateCircuit<C: PlainDPCComponents> {
+    // Parameters
+    comm_and_crh_parameters: Option<CommAndCRHPublicParameters<C>>,
+
+    // Commitment to Predicate input.
+    local_data_comm: Option<<C::LocalDataComm as CommitmentScheme>::Output>,
+    position:        u8,
+
+    // Transferred Amount
+    amount: u32,
+}
+
+impl<C: PlainDPCComponents> MintPredicateCircuit<C> {
+    pub fn blank(comm_and_crh_parameters: &CommAndCRHPublicParameters<C>) -> Self {
+        let local_data_comm = <C::LocalDataComm as CommitmentScheme>::Output::default();
+
+        Self {
+            comm_and_crh_parameters: Some(comm_and_crh_parameters.clone()),
+            local_data_comm:         Some(local_data_comm),
+            position:                0u8,
+            amount: 0u32,
+        }
+    }
+
+    pub fn new(
+        comm_amd_crh_parameters: &CommAndCRHPublicParameters<C>,
+        local_data_comm: &<C::LocalDataComm as CommitmentScheme>::Output,
+        position: u8,
+        amount: u32,
+    ) -> Self {
+        Self {
+            // Parameters
+            comm_and_crh_parameters: Some(comm_amd_crh_parameters.clone()),
+
+            // Other stuff
+            local_data_comm: Some(local_data_comm.clone()),
+            position,
+            amount,
+        }
+    }
+}
+
+impl<C: PlainDPCComponents> Circuit<C::E> for MintPredicateCircuit<C> {
+    fn synthesize<CS: ConstraintSystem<C::E>>(self, cs: &mut CS) -> Result<(), SynthesisError> {
+        let _position = UInt8::alloc_input_vec(cs.ns(|| "Alloc position"), &[self.position])?;
+
+        let _local_data_comm_pp =
+            <C::LocalDataCommGadget as CommitmentGadget<_, _>>::ParametersGadget::alloc_input(
+                &mut cs.ns(|| "Declare Pred Input Comm parameters"),
+                || {
+                    self.comm_and_crh_parameters
+                        .get()
+                        .map(|pp| &pp.local_data_comm_pp)
+                },
+            )?;
+
+        let _local_data_comm =
+            <C::LocalDataCommGadget as CommitmentGadget<_, _>>::OutputGadget::alloc_input(
+                cs.ns(|| "Allocate predicate commitment"),
+                || self.local_data_comm.get(),
+            )?;
+
+        Ok(())
+    }
+}
+
+pub struct ConservePredicateCircuit<C: PlainDPCComponents> {
+    // Parameters
+    comm_and_crh_parameters: Option<CommAndCRHPublicParameters<C>>,
+
+    // Commitment to Predicate input.
+    local_data_comm: Option<<C::LocalDataComm as CommitmentScheme>::Output>,
+    position:        u8,
+
+    // Transferred Amount
+    amount: u32,
+}
+
+impl<C: PlainDPCComponents> ConservePredicateCircuit<C> {
+    pub fn blank(comm_and_crh_parameters: &CommAndCRHPublicParameters<C>) -> Self {
+        let local_data_comm = <C::LocalDataComm as CommitmentScheme>::Output::default();
+
+        Self {
+            comm_and_crh_parameters: Some(comm_and_crh_parameters.clone()),
+            local_data_comm:         Some(local_data_comm),
+            position:                0u8,
+            amount: 0u32,
+        }
+    }
+
+    pub fn new(
+        comm_amd_crh_parameters: &CommAndCRHPublicParameters<C>,
+        local_data_comm: &<C::LocalDataComm as CommitmentScheme>::Output,
+        position: u8,
+        amount: u32,
+    ) -> Self {
+        Self {
+            // Parameters
+            comm_and_crh_parameters: Some(comm_amd_crh_parameters.clone()),
+
+            // Other stuff
+            local_data_comm: Some(local_data_comm.clone()),
+            position,
+            amount,
+        }
+    }
+}
+
+impl<C: PlainDPCComponents> Circuit<C::E> for ConservePredicateCircuit<C> {
+    fn synthesize<CS: ConstraintSystem<C::E>>(self, cs: &mut CS) -> Result<(), SynthesisError> {
+        let _position = UInt8::alloc_input_vec(cs.ns(|| "Alloc position"), &[self.position])?;
+
+        let _local_data_comm_pp =
+            <C::LocalDataCommGadget as CommitmentGadget<_, _>>::ParametersGadget::alloc_input(
+                &mut cs.ns(|| "Declare Pred Input Comm parameters"),
+                || {
+                    self.comm_and_crh_parameters
+                        .get()
+                        .map(|pp| &pp.local_data_comm_pp)
+                },
+            )?;
+
+        let _local_data_comm =
+            <C::LocalDataCommGadget as CommitmentGadget<_, _>>::OutputGadget::alloc_input(
+                cs.ns(|| "Allocate predicate commitment"),
+                || self.local_data_comm.get(),
+            )?;
+
+        // TODO: inputize the amount
+
+        Ok(())
+    }
+}
