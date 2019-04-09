@@ -1,9 +1,15 @@
+extern crate reqwest;
+extern crate serde;
+
 use clap::{Arg, App, SubCommand, AppSettings};
+use primitives::hexdisplay::{HexDisplay, AsBytesRef};
+use rand::{SeedableRng, XorShiftRng};
+use serde::Serialize;
+use std::error::Error;
 use std::fs::File;
+use std::io::prelude::*;
 use std::path::Path;
 use std::string::String;
-use rand::{SeedableRng, XorShiftRng};
-use primitives::hexdisplay::{HexDisplay, AsBytesRef};
 
 pub mod instantiated;
 use instantiated::*;
@@ -84,7 +90,7 @@ fn cli() -> Result<(), String> {
 
     match matches.subcommand() {
         ("gen-tx", Some(sub_matches)) => {
-            println!("Peforming setup...");
+            println!("Performing setup...");
             let mut rng = XorShiftRng::from_seed([0x5dbe6259, 0x8d313d76, 0x3237db17, 0xe5bc0654]);
 
             let ledger_parameters = MerkleTreeIdealLedger::setup(&mut rng).expect("Ledger setup failed");
@@ -309,6 +315,24 @@ fn cli() -> Result<(), String> {
             transaction.stuff.predicate_comm.write(&mut stuff_predicate_comm_v[..]).unwrap();
             transaction.stuff.local_data_comm.write(&mut stuff_local_data_comm_v[..]).unwrap();
 
+            // println!("len1: {:?}", new_commitments_v.len());
+            // println!("len2: {:?}", stuff_predicate_comm_v.len());
+
+
+            assert_eq!(genesis_pred_vk_bytes.len(), 48);
+
+            let record_1 = SerializableRecord { address_public_key: [0u8; 32], payload: new_payloads[0],
+                birth_predicate: genesis_pred_vk_bytes.clone(), death_predicate: genesis_pred_vk_bytes.clone(),
+                serial_number: old_serial_number1_v, commitment: new_commitment1_v };
+
+            // Convert the Record to a JSON string.
+            let serialized = serde_json::to_string(&record_1).unwrap();
+
+            let path = "/tmp/record.json";
+            write_to_file(Path::new(path), &serialized);
+            upload_to_IPFS(path);
+
+
             println!(
                 "
                 \nold serial number: 0x{}
@@ -332,4 +356,56 @@ fn cli() -> Result<(), String> {
         _ => unreachable!()
     }
     Ok(())
+}
+
+#[derive(Serialize)]
+struct SerializableRecord {
+    address_public_key: [u8; 32],
+    payload: [u8; 32],
+    birth_predicate: Vec<u8>, // 48 bytes
+    death_predicate: Vec<u8>, // 48 bytes
+    serial_number: [u8; 32],
+    commitment: [u8; 32],
+}
+
+fn write_to_file(path: &Path, message: &str) {
+    let display = path.display();
+
+    let mut file = match File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}",
+                           display,
+                           Error::description(&why)),
+        Ok(file) => file,
+    };
+
+    match file.write_all(message.as_bytes()) {
+        Err(why) => {
+            panic!("couldn't write to {}: {}", display,
+                   Error::description(&why))
+        },
+        Ok(_) => println!("- Successfully generated a record file to {}", display),
+    }
+}
+
+fn upload_to_IPFS(path: &str) {
+    let form = reqwest::multipart::Form::new()
+        .file("arg", path).unwrap();
+
+    let host = "http://localhost:5001/api/v0/";
+    let url = format!("{}{}", host, "add");
+
+    match reqwest::Client::new()
+        .post(&url)
+        .multipart(form)
+        .send() {
+        Err(why) => panic!("couldn't upload: {}", Error::description(&why)),
+        Ok(mut res) => {
+            println!("- Successfully uploaded the record.json to IPFS");
+            print!("  Response message: ");
+            match std::io::copy(&mut res, &mut std::io::stdout()) {
+                Err(why) => panic!("{}", Error::description(&why)),
+                Ok(_) => {},
+            }
+        },
+    }
 }
