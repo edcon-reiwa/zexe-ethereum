@@ -5,7 +5,8 @@
   "scripts": {
     "test": "truffle test",
     "lint": "solium --dir ./contracts",
-    "prepublishOnly": "truffle compile && truffle networks --clean"
+    "prepublishOnly": "truffle compile && truffle networks --clean",
+    "migrate": "truffle migrate"
   },
   "repository": {
     "type": "git",

@@ -12,6 +12,9 @@ Cargo.lock
 .idea
 .DS_STORE
 
+# package manager
+node_modules
+
 # Solidity builds
 solidity/build/*
 .DS_STORE

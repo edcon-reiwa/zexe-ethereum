@@ -16,28 +16,72 @@ rustup install nightly
 ipfs daemon
 ```
 
-## Setup
-Build the library
+## Usage
+There are some steps
+
+1. Setup a snark library
+2. Generate a transaction and a proof
+3. Send a transaction to Plasma
+4. Register commitments to Root chain (Smart contract)
+
+### Generate transaction components for minting privacy-preserving coins
+#### Build a snark library
 ```
 cargo +nightly build --release
 ```
 
-## Tutorial
-Generate transaction components for minting privacy-preserving coins
+#### Generate transactions, proofs and send private inputs to IPFS
+This takes a while because it setups snark and generate proofs.
+This uploads private inputs to IPFS (TODO: data encryption), then prints serial numbers, commitments and verification keys.
 ```
 ./target/release/zexe-eth gen-tx --mode MINT --amount 100
 ```
 
-## zk-Plasma
-Start a web3 instance like ganache-cli.
+It prints standard output like:
+```
+Performing setup...
+Generating transaction...
+public key:"f3a572f43856518650e3106d1ae05ee752374bf0310d11a9ecaae61772366c0c"
+- Successfully generated a record file to /tmp/record.json
+- Successfully uploaded the record.json to IPFS
+  Response message: {"Name":"record.json","Hash":"QmTmAMs6LUw3VAT3E2M3hkHULxQHNSzqEeMn5iLoQTyyHS","Size":"650"}
 
+
+old serial number: 0x729c4b45a77c37721e6c71d4d4e89b7c4b8a148745614c0986916fa73ae5236a
+
+new_commitment: 0xed01a5fa40a0e43ddf6ba43a2c62da93cc731d826f63b4e7b1cdefecfee31711
+
+ledger digest: 0x181d852efe62b47f27ce0feca00a2886e250d4b3918ba238f3c2ffe9ea4df605
+
+predicate commitment: 0x58b854e483d0d1e17193c9468929b6f2d40ea5d66ef8c8bee3c5e281d9c07375
+
+local data commitment: 0x02fc067f83b3e2e395f116899859aad94cdeae070a3abdb927750ceabff09812
+```
+
+
+### zk-Plasma
+Start a web3 instance like ganache-cli.
 ```
 ganache-cli
 ```
 
-Run the zk-plasma server with:
-
+Install dependencies (Python v3.7 required)
+It'd be better to create virtualenv before `pip install`
 ```
+cd zk-plasma
+
+# ↓ optional for virtualenv
+virtualenv ./venv
+source venv/bin/activate
+# ↑ optional
+
+pip install -r requirements.txt
+cd ..
+```
+
+Run the zk-plasma server with:
+```
+source zk-plasma/venv/bin/activate # optional
 python ./zk-plasma/zk-plasma.py
 ```
 
@@ -48,9 +92,9 @@ You can send transactions via the endpoint:
 localhost:8546/transfer
 ```
 
-This expects a `POST` including a transaction as a json in the form of:
+This expects a `POST` with request body that is a transaction as a json in the form of:
 ```
-transaction = {
+{
     "serialNumbers": [357654356874326504350, 5607435604375604325432],
     "newRecords": [321321321321, 57432530672504325],
     "memo": [1321321321, 12321321321],
@@ -63,18 +107,22 @@ transaction = {
 Deploy the Leger Smart Contract
 ```
 cd soldity
-truffle migrate
+npm install
+npm run migrate
 ```
 
-Deploy the ENS contracts
+Deploy the ENS contracts (Python v2.7 required)
 ```
 cd ens
-truffle migrate
+npm install
+npm run migrate
 ```
-Starting the web interface
+
+Starting the web interface (Python v2.7 required)
 ```
 cd client
-npm run start
+npm install
+npm start
 ```
 
 ### Notes
