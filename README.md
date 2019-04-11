@@ -1,5 +1,8 @@
-# zexe-ethereum
-An implementation of ZEXE on Ethereum
+# ZEXE on Plasma
+Imagine scalable transactions with full privacy: enter scalable decentralized arbitrary computations with zk-SNARKs on Plasma. ZEXE on Plasma allows to build scalable private DEX and much more.
+
+- [Devpost](https://devpost.com/software/zexe-on-ethereum)
+- [Google Slides](https://docs.google.com/presentation/d/1qZoInM4OzPrYs5cISGHdgjN20m8V8Hh9JtOIYxOLbpY/edit#slide=id.p)
 
 ![sequence](https://raw.githubusercontent.com/edcon-reiwa/zexe-ethereum/master/docs/zexe_sequence.png)
 
